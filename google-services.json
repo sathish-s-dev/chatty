@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "957399145425",
+    "firebase_url": "https://chat-app-266b1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "chat-app-266b1",
+    "storage_bucket": "chat-app-266b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957399145425:android:0c16287c3497c2db2a1ef0",
+        "android_client_info": {
+          "package_name": "com.sathish.s.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957399145425-k7s1m85pfld164fo61p8a8d1ikdq72cl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sathish.s.chatapp",
+            "certificate_hash": "b004ee6e517b9b982b062cf06dcfabf04f67df5b"
+          }
+        },
+        {
+          "client_id": "957399145425-htb7cekdnef9qqpq4h0pfs26438rseqc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBC033TeYVchU11H9FXzWs0ryYDsZl-5L8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957399145425-htb7cekdnef9qqpq4h0pfs26438rseqc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "957399145425-gbdvbk19p2dcvkj62d5s6irt3jhvktob.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sathish.s.chat-app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957399145425:android:3f239e10948e01462a1ef0",
+        "android_client_info": {
+          "package_name": "com.sathish.s.chatty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957399145425-kgqq1ij6t24jug67da7p9r3nl6dutshv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sathish.s.chatty",
+            "certificate_hash": "cff07f672dba2acf0348d678396b3b8b98f1b89b"
+          }
+        },
+        {
+          "client_id": "957399145425-nkoe1utfduuo08m4oiajc640epgrp96s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sathish.s.chatty",
+            "certificate_hash": "3e1c75b8462c270c981b5032b0bdfc58bfed36e7"
+          }
+        },
+        {
+          "client_id": "957399145425-htb7cekdnef9qqpq4h0pfs26438rseqc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBC033TeYVchU11H9FXzWs0ryYDsZl-5L8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957399145425-htb7cekdnef9qqpq4h0pfs26438rseqc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "957399145425-gbdvbk19p2dcvkj62d5s6irt3jhvktob.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sathish.s.chat-app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
