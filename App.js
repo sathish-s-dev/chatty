@@ -1,106 +1,95 @@
-import { StatusBar } from 'expo-status-bar';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { useLayoutEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'expo-dev-client';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
+
+import ChatScreen from './screens/ChatScreen';
+import HomeScreen from './screens/HomeScreen';
+import LoginScreen from './screens/LoginScreen';
+import SplashScreen from './screens/SplashScreen';
+import SignupScreen from './screens/SignupScreen';
+import ProfileDetailScreen from './screens/ProfileDetailScreen';
+import { Provider } from './lib/authContext';
 
 export default function App() {
-	GoogleSignin.configure({
-		webClientId:
-			'957399145425-htb7cekdnef9qqpq4h0pfs26438rseqc.apps.googleusercontent.com',
-	});
+	const [authState, setAuthState] = useState(null);
+	const [userId, setUserId] = useState(null);
 
-	// Set an initializing state whilst Firebase connects
-	const [initializing, setInitializing] = useState(true);
-	const [user, setUser] = useState();
+	const getUser = async () => {
+		const result = await AsyncStorage.getItem('user');
+		const Id = await AsyncStorage.getItem('userId');
 
-	// Handle user state changes
-	function onAuthStateChanged(user) {
-		setUser(user);
-		if (initializing) setInitializing(false);
-	}
+		console.log(JSON.parse(result));
+		setAuthState(JSON.parse(result));
+		setUserId(Id);
+	};
 
-	useEffect(() => {
-		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-		return subscriber; // unsubscribe on unmount
+	useLayoutEffect(() => {
+		getUser();
 	}, []);
 
-	if (initializing) return null;
-
-	if (!user) {
-		return (
-			<View>
-				<GoogleSignIn />
-			</View>
-		);
-	}
-
-	async function onGoogleLinkButtonPress() {
-		// Check if your device supports Google Play
-		await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-		// Get the user ID token
-		const { idToken } = await GoogleSignin.signIn();
-
-		// Create a Google credential with the token
-		const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-		// Link the user with the credential
-		const firebaseUserCredential = await auth().currentUser.linkWithCredential(
-			googleCredential
-		);
-		// You can store in your app that the account was linked.
-		return;
-	}
-
-	console.log(user.photoURL);
+	const Stack = createNativeStackNavigator();
 
 	return (
-		<View style={styles.container}>
-			<Text>Open up App.js to start working on your app!</Text>
-			<StatusBar style='auto' />
-			<Text>{user.displayName}</Text>
-			<Image
-				source={{
-					uri: user.photoURL,
-				}}
-				style={{ width: 50, height: 50, borderRadius: 50 }}
-			/>
-			<GoogleSignIn />
-		</View>
-	);
-}
+		<Provider
+			value={{
+				authState,
+				setAuthState,
+				userId,
+				setUserId,
+			}}>
+			<NavigationContainer>
+				<Stack.Navigator initialRouteName={'splash'}>
+					<Stack.Screen
+						name='home'
+						component={HomeScreen}
+						options={{
+							// header: () => <Header />,
+							headerShown: false,
+						}}
+					/>
+					<Stack.Screen
+						name='chat'
+						component={ChatScreen}
+						options={{
+							headerStyle: {
+								backgroundColor: 'rgb(2,6,3)',
+							},
+							headerTintColor: 'rgb(255,255,255)',
+						}}
+					/>
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-});
-
-import { Button } from 'react-native';
-import { useEffect, useState } from 'react';
-
-function GoogleSignIn() {
-	async function onGoogleButtonPress() {
-		// Check if your device supports Google Play
-		await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-		// Get the users ID token
-		const { idToken } = await GoogleSignin.signIn();
-
-		// Create a Google credential with the token
-		const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-		// Sign-in the user with the credential
-		return auth().signInWithCredential(googleCredential);
-	}
-	return (
-		<Button
-			title='Google Sign-In'
-			onPress={() =>
-				onGoogleButtonPress().then(() => console.log('Signed in with Google!'))
-			}
-		/>
+					<Stack.Screen
+						name='splash'
+						component={SplashScreen}
+						options={{
+							headerShown: false,
+						}}
+					/>
+					<Stack.Screen
+						name='signup'
+						component={SignupScreen}
+						options={{
+							headerShown: false,
+						}}
+					/>
+					<Stack.Screen
+						name='login'
+						component={LoginScreen}
+						options={{
+							headerShown: false,
+						}}
+					/>
+					<Stack.Screen
+						name='profile-detail'
+						component={ProfileDetailScreen}
+						options={{
+							headerShown: false,
+						}}
+					/>
+				</Stack.Navigator>
+			</NavigationContainer>
+		</Provider>
 	);
 }
