@@ -26,7 +26,7 @@ const SplashScreen = ({ navigation }) => {
 				</View>
 				<Text className='text-4xl text-slate-300'> Chatty</Text>
 				<Text className='text-lg text-slate-300'>
-					enjoy chatting with friends
+					Enjoy chatting with friends
 				</Text>
 			</View>
 			<View className='w-full flex-row gap-10'>

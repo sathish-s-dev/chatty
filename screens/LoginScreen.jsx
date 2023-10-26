@@ -9,7 +9,7 @@ import { Foundation, Ionicons } from '@expo/vector-icons';
 import { authContext } from '../lib/authContext';
 import Input from '../components/Input';
 import firestore from '@react-native-firebase/firestore';
-import { serverTimestamp } from 'firebase/firestore';
+import IconButton from '../components/IconButton';
 
 // android   519735730047-bduu795a5i05h2er85kkm6i22c30r02e.apps.googleusercontent.com
 
@@ -45,12 +45,18 @@ const LoginScreen = () => {
 						photoURL: user.photoURL,
 						rooms: [],
 						friends: [],
+						favouriteFriends: [],
 					});
 					console.log(result.id, 'user added');
+				} else {
+					let Id = dbUser.docs[0].id;
+					console.log(Id);
+					AsyncStorage.setItem('userId', Id);
 				}
 			} else {
 				setAuthState(null);
 				AsyncStorage.removeItem('user');
+				AsyncStorage.removeItem('userId');
 				navigation.navigate('login');
 			}
 			if (initializing) setInitializing(false);
@@ -102,7 +108,6 @@ const LoginScreen = () => {
 	const hanldeGoogleLogin = () =>
 		onGoogleButtonPress().then(() => {
 			navigation.navigate('home');
-			// console.log(user);
 		});
 
 	return (
@@ -132,7 +137,7 @@ const LoginScreen = () => {
 			<View className='border border-slate-100 w-full flex-row items-center pr-3'>
 				<Input
 					value={user.password}
-					placeholder='*********'
+					placeholder='*************'
 					className={'text-lg'}
 					secure={view}
 					handleChange={(text) =>
@@ -143,7 +148,7 @@ const LoginScreen = () => {
 					}
 				/>
 				<TouchableOpacity onPress={handlePasswordView}>
-					{user.secureTextEntry ? (
+					{view ? (
 						<Ionicons
 							name='ios-eye'
 							size={24}
@@ -162,9 +167,8 @@ const LoginScreen = () => {
 				className='bg-blue-400 justify-center items-center p-3 w-full rounded-lg overflow-hidden'
 				// onPress={handleLogin}
 			>
-				<Text className='text-slate-200 font-extrabold text-lg'>Log in</Text>
+				<Text className='text-slate-200 font-extrabold text-lg'>Login</Text>
 			</TouchableOpacity>
-			<View className='w-full border-b border-slate-600 mt-5' />
 
 			<TouchableOpacity
 				className='bg-blue-400 justify-center items-center p-3 w-full rounded-lg overflow-hidden'
@@ -174,29 +178,19 @@ const LoginScreen = () => {
 			<View className='border-b w-full border-slate-600' />
 			<Text className='text-slate-100'>or</Text>
 			<View className='flex-row space-x-3'>
-				<TouchableOpacity
+				<IconButton
 					onPress={hanldeGoogleLogin}
-					className='flex-row items-center space-x-2 border border-slate-600 rounded-lg p-2'>
-					<Ionicons
-						name='logo-google'
-						size={30}
-						color='rgb(226 232 240)'
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity className='flex-row items-center space-x-2 border border-slate-600 rounded-lg p-2'>
-					<Ionicons
-						name='logo-github'
-						size={30}
-						color='rgb(226 232 240)'
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity className='flex-row items-center space-x-2 border border-slate-600 rounded-lg p-2'>
-					<Ionicons
-						name='logo-facebook'
-						size={30}
-						color='rgb(226 232 240)'
-					/>
-				</TouchableOpacity>
+					icon={'logo-google'}
+					size={30}
+				/>
+				<IconButton
+					icon={'logo-github'}
+					size={30}
+				/>
+				<IconButton
+					icon={'logo-facebook'}
+					size={30}
+				/>
 			</View>
 		</View>
 	);

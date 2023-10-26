@@ -24,12 +24,14 @@ const Header = () => {
 						}
 					}}>
 					{photo ? (
-						<Image
-							className='w-14 bg-white aspect-square rounded-full ring-2 ring-green-400 ring-offset-2'
-							source={{
-								uri: photo,
-							}}
-						/>
+						<View className='border-[3px] p-1 border-blue-600 rounded-full hover:animate-spin'>
+							<Image
+								className='w-12 bg-white aspect-square rounded-full ring-2 ring-green-400 ring-offset-2'
+								source={{
+									uri: photo,
+								}}
+							/>
+						</View>
 					) : null}
 				</TouchableOpacity>
 			</View>

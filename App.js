@@ -20,8 +20,9 @@ export default function App() {
 		const result = await AsyncStorage.getItem('user');
 		const Id = await AsyncStorage.getItem('userId');
 
-		console.log(JSON.parse(result));
-		setAuthState(JSON.parse(result));
+		let user = JSON.parse(result);
+		console.log(user?.email, Id);
+		setAuthState(user);
 		setUserId(Id);
 	};
 

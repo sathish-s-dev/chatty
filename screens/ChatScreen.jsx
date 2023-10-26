@@ -13,10 +13,20 @@ import firestore from '@react-native-firebase/firestore';
 import { Ionicons } from '@expo/vector-icons';
 import { useLiveMessage } from '../hooks/useLiveMessage';
 import { authContext } from '../lib/authContext';
+import { useNavigation } from '@react-navigation/native';
 
 const ChatScreen = ({ route }) => {
-	const room = useLiveMessage();
-	console.log(room);
+	const param = route.params;
+	console.log(param);
+
+	const navigation = useNavigation();
+	navigation.setOptions({
+		// headerTitle: `Chat with ${param?.name}`,
+	});
+
+	const room = useLiveMessage(param?.id);
+
+	// console.log(room);
 	let chats = room?.chat?.messages;
 	const authState = useContext(authContext);
 	const user = authState?.authState;
@@ -39,6 +49,8 @@ const ChatScreen = ({ route }) => {
 								<ChatBubble
 									key={i}
 									message={item.message}
+									photoURL={item.photoUrl}
+									displayName={item.name}
 								/>
 							)
 						)}
@@ -58,12 +70,14 @@ const ChatScreen = ({ route }) => {
 							if (message) {
 								try {
 									firestore()
-										.doc('room/GytkqxCdx8KMeh3VHoHK')
+										.doc(`room/${param?.id}`)
 										.update({
 											messages: firestore.FieldValue.arrayUnion({
 												name: user.displayName,
+												photoUrl: `${user.photoURL}`,
 												message,
 											}),
+											lastMessage: message,
 										})
 										.then(() => console.log('added message'));
 								} catch (error) {

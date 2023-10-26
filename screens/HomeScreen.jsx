@@ -11,12 +11,21 @@ import FavouritePeoples from '../components/FavouritePeoples';
 import Header from '../components/Header';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRooms } from '../hooks/useRoom';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
+	const authValues = useContext(authContext);
 
-	useLayoutEffect(() => {}, []);
-	const { authState } = useContext(authContext);
+	const roomData = useRooms(authValues?.userId);
+
+	useLayoutEffect(() => {
+		if (!auth().currentUser) {
+			AsyncStorage.removeItem('user');
+			AsyncStorage.removeItem('userId');
+			navigation.navigate('login');
+		}
+	}, []);
 
 	const [modalVisible, setModalVisible] = useState(false);
 
@@ -35,10 +44,18 @@ const HomeScreen = () => {
 						Chats
 					</Text>
 					<ScrollView>
-						{Array(20)
+						{/* {Array(20)
 							.fill(0)
 							.map((_, i) => (
 								<ChatItem key={i} />
+							))} */}
+						{roomData?.rooms &&
+							roomData.rooms.map((item, index) => (
+								<ChatItem
+									key={index}
+									name={item.name}
+									id={item.id}
+								/>
 							))}
 					</ScrollView>
 				</View>

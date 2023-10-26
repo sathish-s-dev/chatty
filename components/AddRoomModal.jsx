@@ -9,7 +9,70 @@ const AddRoomModal = ({ modalVisible, setModalVisible }) => {
 	const [roomName, setRoomName] = useState('');
 	const [roomId, setRoomId] = useState('');
 
-	const { userId } = useContext(authContext);
+	const userData = useContext(authContext);
+	let userId = userData?.userId;
+
+	const addRoom = async () => {
+		if (roomName) {
+			try {
+				console.log({
+					title: roomName,
+					messages: [],
+				});
+				let room = await firestore().collection('room').add({
+					name: roomName,
+					messages: [],
+				});
+
+				console.log('created');
+				let userRoom = await firestore()
+					.collection('users')
+					.doc(userId)
+					.update({
+						rooms: firestore.FieldValue.arrayUnion({
+							id: room.id,
+							name: roomName,
+						}),
+					});
+				console.log('success');
+				setRoomName('');
+				setModalVisible(false);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	};
+
+	const joinRoom = async () => {
+		if (roomId) {
+			try {
+				console.log({
+					title: roomName,
+					messages: [],
+				});
+				let room = await firestore().collection('room').doc(roomId).get();
+				console.log(room);
+
+				if (room.exists) {
+					let userRoom = await firestore()
+						.collection('users')
+						.doc(userId)
+						.update({
+							rooms: firestore.FieldValue.arrayUnion({
+								id: roomId,
+								name: room.data()?.name,
+							}),
+						});
+					console.log('success');
+					setRoomName('');
+				}
+
+				setModalVisible(false);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	};
 
 	return (
 		<Modal
@@ -49,31 +112,7 @@ const AddRoomModal = ({ modalVisible, setModalVisible }) => {
 							text={'create'}
 							buttonStyles={'bg-blue-600 py-3 px-4 self-start rounded-lg'}
 							textStyles={'text-white font-bold tracking-wider'}
-							onPress={async () => {
-								if (roomName) {
-									console.log({
-										title: roomName,
-										messages: [],
-									});
-									let room = await firestore().collection('room').add({
-										name: roomName,
-										messages: [],
-									});
-									// const result = await AsyncStorage.getItem('user');
-									let userRoom = await firestore()
-										.collection('users')
-										.doc(userId)
-										.update({
-											rooms: firestore.FieldValue.arrayUnion({
-												id: room.id,
-												name: roomName,
-											}),
-										});
-									console.log('success');
-									setRoomName('');
-									setModalVisible(false);
-								}
-							}}
+							onPress={addRoom}
 						/>
 						<Button
 							text={'cancel'}
@@ -102,12 +141,7 @@ const AddRoomModal = ({ modalVisible, setModalVisible }) => {
 							text={'join'}
 							buttonStyles={'bg-blue-600 py-3 px-4 self-start rounded-lg'}
 							textStyles={'text-white font-bold tracking-wider'}
-							onPress={() => {
-								if (roomId) {
-									console.log(roomId);
-									setRoomId('');
-								}
-							}}
+							onPress={joinRoom}
 						/>
 						<Button
 							text={'cancel'}
