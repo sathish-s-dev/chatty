@@ -1,9 +1,10 @@
 import firestore from '@react-native-firebase/firestore';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 export const useRooms = (userId) => {
 	const [rooms, setRooms] = useState('');
+	console.log(userId);
 	function onResult(QuerySnapshot) {
 		// console.log('Got Users collection result.', QuerySnapshot.data().rooms);
 		setRooms(QuerySnapshot.data()?.rooms);
@@ -13,24 +14,25 @@ export const useRooms = (userId) => {
 		console.error(error);
 	}
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const subscribe = firestore()
 			.collection('users')
 			.doc(userId)
 			.get()
 			.then((querysnapshot) => {
-				setRooms(querysnapshot.data()?.rooms);
+				if (querysnapshot.exists) {
+					onResult(querysnapshot);
+				}
 			});
-		console.log(subscribe);
+		// console.log(subscribe);
 	}, []);
-
-	useEffect(() => {
-		const subscribe = firestore()
-			.collection('users')
-			.doc(userId)
-			.onSnapshot(onResult, onError);
-		return () => subscribe();
-	}, []);
+	// useEffect(() => {
+	// 	const subscribe = firestore()
+	// 		.collection('users')
+	// 		.doc(userId)
+	// 		.onSnapshot(onResult, onError);
+	// 	return () => subscribe();
+	// }, []);
 
 	if (!rooms) {
 		return;

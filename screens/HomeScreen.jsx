@@ -12,12 +12,26 @@ import Header from '../components/Header';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRooms } from '../hooks/useRoom';
+import firestore from '@react-native-firebase/firestore';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
-	const authValues = useContext(authContext);
+	const { userId } = useContext(authContext);
+	const [rooms, setRooms] = useState([]);
 
-	const roomData = useRooms(authValues?.userId);
+	useLayoutEffect(() => {
+		const subscribe = firestore()
+			.collection('users')
+			.doc(userId)
+			.get()
+			.then((querysnapshot) => {
+				if (querysnapshot.exists) {
+					console.log(querysnapshot);
+					setRooms(querysnapshot.data().rooms);
+				}
+			});
+	}, [userId]);
+	console.log(rooms);
 
 	useLayoutEffect(() => {
 		if (!auth().currentUser) {
@@ -49,8 +63,8 @@ const HomeScreen = () => {
 							.map((_, i) => (
 								<ChatItem key={i} />
 							))} */}
-						{roomData?.rooms &&
-							roomData.rooms.map((item, index) => (
+						{rooms &&
+							rooms.map((item, index) => (
 								<ChatItem
 									key={index}
 									name={item.name}
@@ -72,6 +86,7 @@ const HomeScreen = () => {
 			<AddRoomModal
 				modalVisible={modalVisible}
 				setModalVisible={setModalVisible}
+				setRooms={setRooms}
 			/>
 		</>
 	);

@@ -47,10 +47,11 @@ const LoginScreen = () => {
 						friends: [],
 						favouriteFriends: [],
 					});
-					console.log(result.id, 'user added');
+					alert(result.id, 'user added');
+					AsyncStorage.setItem('userId', result.id);
 				} else {
 					let Id = dbUser.docs[0].id;
-					console.log(Id);
+					alert(Id);
 					AsyncStorage.setItem('userId', Id);
 				}
 			} else {

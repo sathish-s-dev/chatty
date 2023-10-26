@@ -1,16 +1,29 @@
 import { View, Text, Modal, Pressable, TextInput } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useLayoutEffect, useState } from 'react';
 import Button from './Button';
 import { Ionicons } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
 import { authContext } from '../lib/authContext';
 
-const AddRoomModal = ({ modalVisible, setModalVisible }) => {
+const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 	const [roomName, setRoomName] = useState('');
 	const [roomId, setRoomId] = useState('');
 
 	const userData = useContext(authContext);
 	let userId = userData?.userId;
+
+	useLayoutEffect(() => {
+		function onResult(QuerySnapshot) {
+			// console.log('Got Users collection result.', QuerySnapshot.data().rooms);
+			setRooms(QuerySnapshot.data()?.rooms);
+		}
+
+		const subscribe = firestore()
+			.collection('users')
+			.doc(userId)
+			.onSnapshot(onResult);
+		return () => subscribe();
+	}, [userId]);
 
 	const addRoom = async () => {
 		if (roomName) {
