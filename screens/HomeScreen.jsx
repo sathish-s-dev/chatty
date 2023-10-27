@@ -1,5 +1,12 @@
-import React, { useContext, useLayoutEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import {
+	Alert,
+	RefreshControl,
+	ScrollView,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 import ChatItem from '../components/ChatItem';
 // import { auth } from '../firebase.config';
 import { useNavigation } from '@react-navigation/core';
@@ -19,19 +26,44 @@ const HomeScreen = () => {
 	const { userId } = useContext(authContext);
 	const [rooms, setRooms] = useState([]);
 
-	useLayoutEffect(() => {
-		const subscribe = firestore()
+	const [refreshing, setRefreshing] = React.useState(false);
+
+	useEffect(() => {
+		setRefreshing(true);
+		refreshing ? Alert.alert('reload called') : null;
+		setTimeout(() => {
+			setRefreshing(false);
+		}, 1000);
+	}, [userId]);
+
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		getRooms(userId);
+		setTimeout(() => {
+			setRefreshing(false);
+		}, 2000);
+	}, []);
+
+	const getRooms = (userId) => {
+		firestore()
 			.collection('users')
 			.doc(userId)
 			.get()
 			.then((querysnapshot) => {
 				if (querysnapshot.exists) {
-					console.log(querysnapshot);
-					setRooms(querysnapshot.data().rooms);
+					// console.log(querysnapshot);
+					setRooms(querysnapshot.data()?.rooms);
 				}
-			});
+			})
+			.catch((e) => Alert.alert(e.message));
+	};
+
+	useLayoutEffect(() => {
+		getRooms(userId);
 	}, [userId]);
-	console.log(rooms);
+
+	// Alert.alert(JSON.stringify(rooms));
+	// console.log(rooms);
 
 	useLayoutEffect(() => {
 		if (!auth().currentUser) {
@@ -45,8 +77,19 @@ const HomeScreen = () => {
 
 	return (
 		<>
-			<ScrollView className='bg-slate-950 flex-1'>
+			<ScrollView
+				className='bg-slate-950 flex-1'
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+					/>
+				}>
 				<Header />
+				{refreshing ? (
+					<Text className='text-slate-100 h-10'>reloading please wait</Text>
+				) : null}
+
 				<View className='h-52 bg-blue-700 rounded-[34px] mt-6'>
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
 						Favourite People
