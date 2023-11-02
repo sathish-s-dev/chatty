@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 export const useLiveMessage = (id) => {
 	const [chat, setChat] = useState('');
 	function onResult(QuerySnapshot) {
-		console.log('Got Users collection result.', QuerySnapshot.id);
+		// console.log('Got Users collection result.', QuerySnapshot.id);
 		setChat(QuerySnapshot.data());
 	}
 

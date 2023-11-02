@@ -1,4 +1,4 @@
-import { Foundation, Ionicons, AntDesign } from '@expo/vector-icons';
+import { Foundation, Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
@@ -7,8 +7,7 @@ import Input from '../components/Input';
 // import { auth } from '../firebase.config';
 import { useNavigation } from '@react-navigation/core';
 
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button } from 'react-native-paper';
 
 const SignupScreen = () => {
 	const navigation = useNavigation();
@@ -128,18 +127,22 @@ const SignupScreen = () => {
 					)}
 				</TouchableOpacity>
 			</View>
-			<View className='w-full'>
-				<TouchableOpacity
-					onPress={handleSignup}
-					className='bg-blue-400 mt-6 justify-center items-center p-3 w-full rounded-lg overflow-hidden'>
-					<Text className='text-slate-200 font-extrabold text-lg'>Signup</Text>
-				</TouchableOpacity>
-				<View className='w-full border-b border-slate-600 my-5' />
-				<TouchableOpacity
-					onPress={() => navigation.navigate('login')}
-					className='bg-blue-400  justify-center items-center p-3 w-full rounded-lg overflow-hidden'>
-					<Text className='text-slate-200 font-extrabold text-lg'>Login</Text>
-				</TouchableOpacity>
+			<View className='w-full space-y-5'>
+				<Button
+					textColor='rgb(241 245 249)'
+					className='w-full rounded-lg bg-blue-600 text-slate-100 p-1'>
+					Signup
+				</Button>
+				<Button
+					mode='outlined'
+					textColor='rgb(241 245 249)'
+					style={{
+						borderColor: 'rgb(71 85 105)',
+					}}
+					className='w-full rounded-lg border-blue-600 p-1'
+					onPress={() => navigation.navigate('login')}>
+					Login
+				</Button>
 			</View>
 			{/* <View className='border-b w-full border-slate-600' />
 			<Text className='text-slate-100'>or</Text>

@@ -7,7 +7,7 @@ const Input = ({ placeholder, handleChange, className, value, secure }) => {
 		<TextInput
 			value={value}
 			className={cn(
-				'flex-1 text-slate-100 placeholder-slate-300 p-3 rounded-md text-lg',
+				'flex-1 text-slate-100 placeholder-slate-600 p-3 rounded-md text-lg',
 				className
 			)}
 			placeholderTextColor='rgb(71 85 105)'

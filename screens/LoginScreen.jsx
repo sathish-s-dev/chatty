@@ -1,15 +1,15 @@
+import { Foundation, Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useNavigation } from '@react-navigation/core';
 import { useContext, useLayoutEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/core';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
-import { Foundation, Ionicons } from '@expo/vector-icons';
 
-import { authContext } from '../lib/authContext';
-import Input from '../components/Input';
 import firestore from '@react-native-firebase/firestore';
-import IconButton from '../components/IconButton';
+import { Button, FAB, IconButton } from 'react-native-paper';
+import Input from '../components/Input';
+import { authContext } from '../lib/authContext';
 
 // android   519735730047-bduu795a5i05h2er85kkm6i22c30r02e.apps.googleusercontent.com
 
@@ -47,11 +47,11 @@ const LoginScreen = () => {
 						friends: [],
 						favouriteFriends: [],
 					});
-					alert(result.id, 'user added');
+					// alert(result.id, 'user added');
 					AsyncStorage.setItem('userId', result.id);
 				} else {
 					let Id = dbUser.docs[0].id;
-					alert(Id);
+					// alert(Id);
 					AsyncStorage.setItem('userId', Id);
 				}
 			} else {
@@ -116,7 +116,7 @@ const LoginScreen = () => {
 			<Text className='text-2xl text-slate-100 font-bold tracking-widest pb-6'>
 				Login
 			</Text>
-			<View className='border border-slate-100 w-full flex-row items-center pr-3'>
+			<View className='border border-slate-600 rounded-lg w-full flex-row items-center pr-3'>
 				<Input
 					value={user.email}
 					handleChange={(text) =>
@@ -131,14 +131,14 @@ const LoginScreen = () => {
 					<Foundation
 						name='at-sign'
 						size={28}
-						color='gray'
+						color='rgb(71 85 105)'
 					/>
 				</TouchableOpacity>
 			</View>
-			<View className='border border-slate-100 w-full flex-row items-center pr-3'>
+			<View className='border border-slate-600 rounded-lg w-full flex-row items-center pr-3'>
 				<Input
 					value={user.password}
-					placeholder='*************'
+					placeholder='********'
 					className={'text-lg'}
 					secure={view}
 					handleChange={(text) =>
@@ -153,45 +153,83 @@ const LoginScreen = () => {
 						<Ionicons
 							name='ios-eye'
 							size={24}
-							color='gray'
+							color='rgb(71 85 105)'
 						/>
 					) : (
 						<Ionicons
 							name='ios-eye-off'
 							size={24}
-							color='gray'
+							color='rgb(71 85 105)'
 						/>
 					)}
 				</TouchableOpacity>
 			</View>
-			<TouchableOpacity
-				className='bg-blue-400 justify-center items-center p-3 w-full rounded-lg overflow-hidden'
-				// onPress={handleLogin}
-			>
-				<Text className='text-slate-200 font-extrabold text-lg'>Login</Text>
-			</TouchableOpacity>
 
-			<TouchableOpacity
-				className='bg-blue-400 justify-center items-center p-3 w-full rounded-lg overflow-hidden'
+			<Button
+				textColor='rgb(241 245 249)'
+				className='w-full rounded-lg bg-blue-600 text-slate-100 p-1'>
+				Login
+			</Button>
+			<Button
+				mode='outlined'
+				textColor='rgb(241 245 249)'
+				style={{
+					borderColor: 'rgb(71 85 105)',
+				}}
+				className='w-full rounded-lg border-blue-600 p-1'
 				onPress={() => navigation.navigate('signup')}>
-				<Text className='text-slate-200 font-extrabold text-lg'>Signup</Text>
-			</TouchableOpacity>
-			<View className='border-b w-full border-slate-600' />
-			<Text className='text-slate-100'>or</Text>
-			<View className='flex-row space-x-3'>
+				Signup
+			</Button>
+			<Text
+				mode='outlined'
+				textStyle={{ color: 'rgb(241 245 249)' }}
+				className='bg-transparent text-slate-100'>
+				or
+			</Text>
+			<View className='flex-row space-x-5 justify-center items-center'>
+				{/* <FAB
+					icon='google'
+					onPress={hanldeGoogleLogin}
+					className='bg-transparent border border-slate-600'
+					color='#fff'
+					size='small'
+				/>
+				<FAB
+					icon='facebook'
+					onPress={hanldeGoogleLogin}
+					className='bg-transparent border border-slate-600'
+					color='#fff'
+					size='small'
+				/> */}
 				<IconButton
 					onPress={hanldeGoogleLogin}
-					icon={'logo-google'}
-					size={30}
+					mode='outlined'
+					icon={'google'}
+					iconColor='white'
+					className=''
+					size={28}
 				/>
 				<IconButton
-					icon={'logo-github'}
-					size={30}
+					mode='outlined'
+					icon={'github'}
+					iconColor='white'
+					className=''
+					size={28}
 				/>
 				<IconButton
-					icon={'logo-facebook'}
-					size={30}
+					mode='outlined'
+					icon={'facebook'}
+					iconColor='white'
+					className=''
+					size={28}
 				/>
+				{/* <FAB
+					icon='github'
+					color='#fff'
+					onPress={hanldeGoogleLogin}
+					className='bg-transparent border border-slate-600'
+					size='small'
+				/> */}
 			</View>
 		</View>
 	);

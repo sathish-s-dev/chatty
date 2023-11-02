@@ -20,6 +20,7 @@ import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRooms } from '../hooks/useRoom';
 import firestore from '@react-native-firebase/firestore';
+import { ActivityIndicator, FAB } from 'react-native-paper';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
@@ -30,7 +31,7 @@ const HomeScreen = () => {
 
 	useEffect(() => {
 		setRefreshing(true);
-		refreshing ? Alert.alert('reload called') : null;
+		// refreshing ? Alert.alert('reload called') : null;
 		setTimeout(() => {
 			setRefreshing(false);
 		}, 1000);
@@ -87,25 +88,26 @@ const HomeScreen = () => {
 				}>
 				<Header />
 				{refreshing ? (
-					<Text className='text-slate-100 h-10'>reloading please wait</Text>
+					<View className='flex-row justify-center space-x-2 items-center'>
+						<ActivityIndicator
+							color='white'
+							size={'small'}
+						/>
+						<Text className='text-slate-100'>reloading</Text>
+					</View>
 				) : null}
 
 				<View className='h-52 bg-blue-700 rounded-[34px] mt-6'>
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
 						Favourite People
 					</Text>
-					<FavouritePeoples />
+					{/* <FavouritePeoples /> */}
 				</View>
 				<View className='flex-1 bg-slate-950 rounded-[34px] p-6 -mt-10'>
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
 						Chats
 					</Text>
 					<ScrollView>
-						{/* {Array(20)
-							.fill(0)
-							.map((_, i) => (
-								<ChatItem key={i} />
-							))} */}
 						{rooms &&
 							rooms.map((item, index) => (
 								<ChatItem
@@ -120,10 +122,10 @@ const HomeScreen = () => {
 			<TouchableOpacity
 				onPress={() => setModalVisible(!modalVisible)}
 				className='absolute justify-center items-center rounded-full bottom-6 right-6'>
-				<Ionicons
-					name='add-circle'
-					size={60}
-					color='white'
+				<FAB
+					icon={'plus'}
+					animated
+					mode='elevated'
 				/>
 			</TouchableOpacity>
 			<AddRoomModal

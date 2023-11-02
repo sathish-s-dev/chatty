@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'expo-dev-client';
+import { PaperProvider } from 'react-native-paper';
 
 import ChatScreen from './screens/ChatScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -11,6 +12,7 @@ import SplashScreen from './screens/SplashScreen';
 import SignupScreen from './screens/SignupScreen';
 import ProfileDetailScreen from './screens/ProfileDetailScreen';
 import { Provider } from './lib/authContext';
+import RoomDetailScreen from './screens/RoomDetailScreen';
 
 export default function App() {
 	const [authState, setAuthState] = useState(null);
@@ -33,64 +35,70 @@ export default function App() {
 	const Stack = createNativeStackNavigator();
 
 	return (
-		<Provider
-			value={{
-				authState,
-				setAuthState,
-				userId,
-				setUserId,
-			}}>
-			<NavigationContainer>
-				<Stack.Navigator initialRouteName={'splash'}>
-					<Stack.Screen
-						name='home'
-						component={HomeScreen}
-						options={{
-							// header: () => <Header />,
-							headerShown: false,
-						}}
-					/>
-					<Stack.Screen
-						name='chat'
-						component={ChatScreen}
-						options={{
-							headerStyle: {
-								backgroundColor: 'rgb(2,6,3)',
-							},
-							headerTintColor: 'rgb(255,255,255)',
-						}}
-					/>
+		<PaperProvider>
+			<Provider
+				value={{
+					authState,
+					setAuthState,
+					userId,
+					setUserId,
+				}}>
+				<NavigationContainer>
+					<Stack.Navigator initialRouteName={'splash'}>
+						<Stack.Screen
+							name='home'
+							component={HomeScreen}
+							options={{
+								// header: () => <Header />,
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name='chat'
+							component={ChatScreen}
+							options={{
+								headerStyle: {
+									backgroundColor: 'rgb(2,6,3)',
+								},
+								headerTintColor: 'rgb(255,255,255)',
+							}}
+						/>
 
-					<Stack.Screen
-						name='splash'
-						component={SplashScreen}
-						options={{
-							headerShown: false,
-						}}
-					/>
-					<Stack.Screen
-						name='signup'
-						component={SignupScreen}
-						options={{
-							headerShown: false,
-						}}
-					/>
-					<Stack.Screen
-						name='login'
-						component={LoginScreen}
-						options={{
-							headerShown: false,
-						}}
-					/>
-					<Stack.Screen
-						name='profile-detail'
-						component={ProfileDetailScreen}
-						options={{
-							headerShown: false,
-						}}
-					/>
-				</Stack.Navigator>
-			</NavigationContainer>
-		</Provider>
+						<Stack.Screen
+							name='splash'
+							component={SplashScreen}
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name='signup'
+							component={SignupScreen}
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name='login'
+							component={LoginScreen}
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name='profile-detail'
+							component={ProfileDetailScreen}
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name='room'
+							component={RoomDetailScreen}
+						/>
+					</Stack.Navigator>
+				</NavigationContainer>
+			</Provider>
+		</PaperProvider>
 	);
 }

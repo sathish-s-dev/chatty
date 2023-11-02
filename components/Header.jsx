@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { authContext } from '../lib/authContext';
 import auth from '@react-native-firebase/auth';
+import { Avatar } from 'react-native-paper';
 
 const Header = () => {
 	const { authState } = useContext(authContext);
@@ -25,11 +26,9 @@ const Header = () => {
 					}}>
 					{photo ? (
 						<View className='border-[3px] p-1 border-blue-600 rounded-full hover:animate-spin'>
-							<Image
-								className='w-12 bg-white aspect-square rounded-full ring-2 ring-green-400 ring-offset-2'
-								source={{
-									uri: photo,
-								}}
+							<Avatar.Image
+								size={48}
+								source={{ uri: photo }}
 							/>
 						</View>
 					) : null}
