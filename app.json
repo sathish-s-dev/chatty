@@ -2,14 +2,14 @@
 	"expo": {
 		"name": "chatty",
 		"slug": "chatty",
-		"version": "1.0.0",
+		"version": "2.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
 		"userInterfaceStyle": "light",
 		"splash": {
 			"image": "./assets/splash.png",
 			"resizeMode": "contain",
-			"backgroundColor": "#ffffff"
+			"backgroundColor": "#fafafa"
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
@@ -18,7 +18,7 @@
 		"android": {
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#ffffff"
+				"backgroundColor": "#fafafa"
 			},
 			"package": "com.sathish.s.chatty",
 			"googleServicesFile": "./google-services.json"

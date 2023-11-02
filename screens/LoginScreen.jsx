@@ -39,14 +39,17 @@ const LoginScreen = () => {
 					.where('email', '==', user.email)
 					.get();
 				if (dbUser.empty) {
-					const result = await firestore().collection('users').add({
-						email: user.email,
-						name: user.displayName,
-						photoURL: user.photoURL,
-						rooms: [],
-						friends: [],
-						favouriteFriends: [],
-					});
+					const result = await firestore()
+						.collection('users')
+						.add({
+							email: user.email,
+							name: user.displayName,
+							photoURL: user.photoURL,
+							full: JSON.stringify(user),
+							rooms: [],
+							friends: [],
+							favouriteFriends: [],
+						});
 					// alert(result.id, 'user added');
 					AsyncStorage.setItem('userId', result.id);
 				} else {
@@ -187,20 +190,7 @@ const LoginScreen = () => {
 				or
 			</Text>
 			<View className='flex-row space-x-5 justify-center items-center'>
-				{/* <FAB
-					icon='google'
-					onPress={hanldeGoogleLogin}
-					className='bg-transparent border border-slate-600'
-					color='#fff'
-					size='small'
-				/>
-				<FAB
-					icon='facebook'
-					onPress={hanldeGoogleLogin}
-					className='bg-transparent border border-slate-600'
-					color='#fff'
-					size='small'
-				/> */}
+
 				<IconButton
 					onPress={hanldeGoogleLogin}
 					mode='outlined'
@@ -223,13 +213,7 @@ const LoginScreen = () => {
 					className=''
 					size={28}
 				/>
-				{/* <FAB
-					icon='github'
-					color='#fff'
-					onPress={hanldeGoogleLogin}
-					className='bg-transparent border border-slate-600'
-					size='small'
-				/> */}
+
 			</View>
 		</View>
 	);

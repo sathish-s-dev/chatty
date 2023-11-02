@@ -1,7 +1,9 @@
 import { Alert, TouchableOpacity, View } from 'react-native';
-import { Avatar, Chip, Text } from 'react-native-paper';
+import { Avatar, Button, Chip, Text } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
+
+const cute = require('../assets/cute.webp');
 
 const RoomDetailScreen = ({ route }) => {
 	const param = route.params;
@@ -44,6 +46,7 @@ const RoomDetailScreen = ({ route }) => {
 					/>
 				</TouchableOpacity>
 			</View>
+			<Button>Leave</Button>
 		</View>
 	);
 };

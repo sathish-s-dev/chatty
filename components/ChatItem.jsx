@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import {  Card, Avatar } from 'react-native-paper';
+import { Card, Avatar } from 'react-native-paper';
 
 const ChatItem = ({ name, id, lastMessage }) => {
 	const navigation = useNavigation();
@@ -10,9 +10,10 @@ const ChatItem = ({ name, id, lastMessage }) => {
 			className='w-full'
 			onPress={() => navigation.navigate('chat', { name, id })}>
 			<Card
-				mode='outlined'
-				className='my-1 bg-transparent'>
-				<View className='flex-row space-x-1 items-center my-2 px-4'>
+				mode='elevated'
+				style={{ borderColor: 'rgba(248, 250, 252,0.3)', borderWidth: 1 }}
+				className='my-2 bg-transparent'>
+				<View className='flex-row my-1 space-x-1 items-center px-4'>
 					<View className='w-10 bg-green-600 aspect-square items-center justify-center rounded-full ring-2 ring-green-400 ring-offset-2'>
 						<Avatar.Text
 							size={48}

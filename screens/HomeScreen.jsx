@@ -8,7 +8,6 @@ import {
 	View,
 } from 'react-native';
 import ChatItem from '../components/ChatItem';
-// import { auth } from '../firebase.config';
 import { useNavigation } from '@react-navigation/core';
 import { authContext } from '../lib/authContext';
 
@@ -56,15 +55,12 @@ const HomeScreen = () => {
 					setRooms(querysnapshot.data()?.rooms);
 				}
 			})
-			.catch((e) => Alert.alert(e.message));
+			.catch((e) => console.log(e));
 	};
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		getRooms(userId);
 	}, [userId]);
-
-	// Alert.alert(JSON.stringify(rooms));
-	// console.log(rooms);
 
 	useLayoutEffect(() => {
 		if (!auth().currentUser) {
@@ -87,21 +83,11 @@ const HomeScreen = () => {
 					/>
 				}>
 				<Header />
-				{refreshing ? (
-					<View className='flex-row justify-center space-x-2 items-center'>
-						<ActivityIndicator
-							color='white'
-							size={'small'}
-						/>
-						<Text className='text-slate-100'>reloading</Text>
-					</View>
-				) : null}
-
-				<View className='h-52 bg-blue-700 rounded-[34px] mt-6'>
+				<View className='h-52 bg-blue-700 rounded-[34px] mt-5'>
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
-						Favourite People
+						Favourite Rooms
 					</Text>
-					{/* <FavouritePeoples /> */}
+					<FavouritePeoples />
 				</View>
 				<View className='flex-1 bg-slate-950 rounded-[34px] p-6 -mt-10'>
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>

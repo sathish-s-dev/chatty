@@ -1,17 +1,25 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { authContext } from '../lib/authContext';
 import auth from '@react-native-firebase/auth';
-import { Avatar } from 'react-native-paper';
+import { Avatar, Button } from 'react-native-paper';
+
+const cute = require('../assets/cute.webp');
 
 const Header = () => {
 	const { authState } = useContext(authContext);
 	const photo = authState?.photoURL;
 	// console.log(photo);
 
+	const [visible, setVisible] = useState(false);
+	// const renderPlacementItem = (title) => <SelectItem title={title} />;
+	const renderToggleButton = () => (
+		<Button onPress={() => setVisible(true)}>TOGGLE POPOVER</Button>
+	);
+
 	return (
-		<SafeAreaView className='p-6 pt-1 bg-slate-950 flex-row justify-between items-center'>
+		<SafeAreaView className='p-6 pt-8 bg-slate-950 flex-row justify-between items-center'>
 			<View>
 				<Text className='text-2xl font-semibold text-slate-100'>Messages</Text>
 			</View>

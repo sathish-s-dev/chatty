@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,6 +13,7 @@ import SignupScreen from './screens/SignupScreen';
 import ProfileDetailScreen from './screens/ProfileDetailScreen';
 import { Provider } from './lib/authContext';
 import RoomDetailScreen from './screens/RoomDetailScreen';
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
 	const [authState, setAuthState] = useState(null);
@@ -23,12 +24,12 @@ export default function App() {
 		const Id = await AsyncStorage.getItem('userId');
 
 		let user = JSON.parse(result);
-		alert(Id);
+		// alert(Id);
 		setAuthState(user);
 		setUserId(Id);
 	};
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		getUser();
 	}, []);
 
@@ -98,6 +99,7 @@ export default function App() {
 						/>
 					</Stack.Navigator>
 				</NavigationContainer>
+				<StatusBar style='light' />
 			</Provider>
 		</PaperProvider>
 	);

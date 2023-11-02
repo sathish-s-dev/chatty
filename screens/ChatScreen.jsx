@@ -16,6 +16,7 @@ import { useLiveMessage } from '../hooks/useLiveMessage';
 import { authContext } from '../lib/authContext';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar, IconButton } from 'react-native-paper';
+import auth from '@react-native-firebase/auth';
 
 const ChatScreen = ({ route }) => {
 	const [fav, setFav] = useState(false);
@@ -72,10 +73,11 @@ const ChatScreen = ({ route }) => {
 							name: user.displayName,
 							photoUrl: `${user.photoURL}`,
 							message,
+							email: user?.email,
 						}),
 						lastMessage: message,
 					})
-					.then(() => console.log('added message'));
+					.then((val) => console.log('added message', val));
 			} catch (error) {
 				console.log(error);
 			}
@@ -104,13 +106,15 @@ const ChatScreen = ({ route }) => {
 									key={i}
 									message={item.message}
 									right
+									email={item?.email}
 								/>
 							) : (
 								<ChatBubble
 									key={i}
-									message={item.message}
-									photoURL={item.photoUrl}
-									displayName={item.name}
+									message={item?.message}
+									photoURL={item?.photoUrl}
+									displayName={item?.name}
+									email={item?.email}
 								/>
 							)
 						)}

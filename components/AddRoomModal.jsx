@@ -1,13 +1,22 @@
-import { View, Text, Modal, Pressable, TextInput } from 'react-native';
+import {
+	View,
+	Text,
+	Modal,
+	Pressable,
+	TextInput,
+	TouchableOpacity,
+} from 'react-native';
 import React, { useContext, useLayoutEffect, useState } from 'react';
-import Button from './Button';
+import { Button as Buttons } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
 import { authContext } from '../lib/authContext';
+import Button from './Button';
 
 const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 	const [roomName, setRoomName] = useState('');
 	const [roomId, setRoomId] = useState('');
+	const [create, setCreate] = useState(true);
 
 	const userData = useContext(authContext);
 	let userId = userData?.userId;
@@ -108,62 +117,33 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 							color='black'
 						/>
 					</Pressable>
-					<Text className='text-[18px] font-semibold uppercase '>
-						create room
-					</Text>
+					{create ? (
+						<CreateRoom
+							roomName={roomName}
+							setRoomName={setRoomName}
+							addRoom={addRoom}
+							setModalVisible={setModalVisible}
+						/>
+					) : (
+						<JoinRoom
+							setModalVisible={setModalVisible}
+							setRoomId={setRoomId}
+							roomId={roomId}
+							joinRoom={joinRoom}
+						/>
+					)}
 					<View>
-						<Text className='font-semibold capitalize pb-2'>Name:</Text>
-						{/* <Input className={'h-24 flex-grow-0'} /> */}
-						<TextInput
-							value={roomName}
-							onChangeText={(text) => setRoomName(text)}
-							className='border rounded text-lg border-blue-400 p-2 text-slate-800'
-						/>
-					</View>
-					<View className='flex-row space-x-3'>
-						<Button
-							text={'create'}
-							buttonStyles={'bg-blue-600 py-3 px-4 self-start rounded-lg'}
-							textStyles={'text-white font-bold tracking-wider'}
-							onPress={addRoom}
-						/>
-						<Button
-							text={'cancel'}
-							buttonStyles={
-								'border-blue-600 border text- py-3 px-4 self-start rounded-lg'
-							}
-							textStyles={'text-blue-600 font-bold tracking-wider'}
-							onPress={() => setModalVisible(false)}
-						/>
-					</View>
-					<View className='border-b border-blue-200' />
-					<Text className='text-[18px] font-semibold uppercase '>
-						join room
-					</Text>
-					<View>
-						<Text className='font-semibold capitalize pb-2'>Room id:</Text>
-						{/* <Input className={'h-24 flex-grow-0'} /> */}
-						<TextInput
-							value={roomId}
-							onChangeText={(text) => setRoomId(text)}
-							className='border rounded text-lg border-blue-400 p-2 text-slate-800'
-						/>
-					</View>
-					<View className='flex-row space-x-3'>
-						<Button
-							text={'join'}
-							buttonStyles={'bg-blue-600 py-3 px-4 self-start rounded-lg'}
-							textStyles={'text-white font-bold tracking-wider'}
-							onPress={joinRoom}
-						/>
-						<Button
-							text={'cancel'}
-							buttonStyles={
-								'border-blue-600 border text- py-3 px-4 self-start rounded-lg'
-							}
-							textStyles={'text-blue-600 font-bold tracking-wider'}
-							onPress={() => setModalVisible(false)}
-						/>
+						<Buttons
+							contentStyle={{ flexDirection: create ? 'row-reverse' : 'row' }}
+							className={`${create ? 'self-end' : 'self-start'} items-center`}
+							onPress={() => {
+								setCreate(!create);
+							}}
+							mode='text'
+							textColor='rgb(29 78 216)'
+							icon={create ? 'arrow-right' : 'arrow-left'}>
+							{create ? 'Join' : 'create'}
+						</Buttons>
 					</View>
 				</View>
 			</View>
@@ -172,3 +152,82 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 };
 
 export default AddRoomModal;
+
+export function JoinRoom({ setModalVisible, setRoomId, joinRoom, roomId }) {
+	return (
+		<View className='space-y-3'>
+			<Text className='text-[18px] font-semibold uppercase '>join room</Text>
+			<View>
+				<Text className='font-semibold capitalize pb-2'>Room id:</Text>
+				{/* <Input className={'h-24 flex-grow-0'} /> */}
+				<TextInput
+					value={roomId}
+					onChangeText={(text) => setRoomId(text)}
+					className='border rounded text-lg border-blue-400 p-2 text-slate-800'
+				/>
+			</View>
+			<View className='flex-row space-x-3'>
+				<Buttons
+					buttonColor='blue'
+					textColor='white'
+					mode='elevated'
+					className='rounded-lg font-bold tracking-wider'
+					onPress={joinRoom}>
+					Join
+				</Buttons>
+				<Buttons
+					textColor='rgb(29 78 216)'
+					mode='elevated'
+					style={{
+						borderColor: 'rgb(29 78 216)',
+					}}
+					className='rounded-lg font-bold tracking-wider'
+					onPress={() => setModalVisible(false)}>
+					cancel
+				</Buttons>
+			</View>
+		</View>
+	);
+}
+
+export function CreateRoom({
+	roomName,
+	setRoomName,
+	addRoom,
+	setModalVisible,
+}) {
+	return (
+		<View className='space-y-3'>
+			<Text className='text-[18px] font-semibold uppercase '>create room</Text>
+			<View>
+				<Text className='font-semibold capitalize pb-2'>Name:</Text>
+				{/* <Input className={'h-24 flex-grow-0'} /> */}
+				<TextInput
+					value={roomName}
+					onChangeText={(text) => setRoomName(text)}
+					className='border rounded text-lg border-blue-400 p-2 text-slate-800'
+				/>
+			</View>
+			<View className='flex-row space-x-3'>
+				<Buttons
+					buttonColor='blue'
+					textColor='white'
+					mode='elevated'
+					className='rounded-lg font-bold tracking-wider'
+					onPress={addRoom}>
+					create
+				</Buttons>
+				<Buttons
+					textColor='rgb(29 78 216)'
+					mode='elevated'
+					style={{
+						borderColor: 'rgb(29 78 216)',
+					}}
+					className='rounded-lg font-bold tracking-wider'
+					onPress={() => setModalVisible(false)}>
+					cancel
+				</Buttons>
+			</View>
+		</View>
+	);
+}
