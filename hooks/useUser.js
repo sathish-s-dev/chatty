@@ -4,9 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 
 const useUser = (userId) => {
-	if (userId) {
-		const [user, setUser] = useState(null);
+	const [user, setUser] = useState(null);
 
+	if (userId) {
 		useEffect(() => {
 			firestore()
 				.collection('users')
@@ -17,9 +17,8 @@ const useUser = (userId) => {
 					}
 				});
 		}, [userId]);
-
-		return user;
 	}
+	return user;
 };
 
 export default useUser;

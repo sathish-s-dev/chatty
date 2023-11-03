@@ -8,7 +8,6 @@ const cute = require('../assets/cute.webp');
 const FavouritePeoples = () => {
 	const { userId } = useContext(authContext);
 	const user = useUser(userId);
-
 	return (
 		<ScrollView
 			horizontal

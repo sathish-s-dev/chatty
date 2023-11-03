@@ -19,6 +19,8 @@ const LoginScreen = () => {
 			'957399145425-htb7cekdnef9qqpq4h0pfs26438rseqc.apps.googleusercontent.com',
 	});
 
+	const { setUserId } = useContext(authContext);
+
 	const [initializing, setInitializing] = useState(true);
 	const { setAuthState } = useContext(authContext);
 
@@ -56,6 +58,7 @@ const LoginScreen = () => {
 					let Id = dbUser.docs[0].id;
 					// alert(Id);
 					AsyncStorage.setItem('userId', Id);
+					setUserId(Id);
 				}
 			} else {
 				setAuthState(null);
@@ -190,7 +193,6 @@ const LoginScreen = () => {
 				or
 			</Text>
 			<View className='flex-row space-x-5 justify-center items-center'>
-
 				<IconButton
 					onPress={hanldeGoogleLogin}
 					mode='outlined'
@@ -213,7 +215,6 @@ const LoginScreen = () => {
 					className=''
 					size={28}
 				/>
-
 			</View>
 		</View>
 	);

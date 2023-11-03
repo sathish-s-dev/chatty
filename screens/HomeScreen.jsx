@@ -17,6 +17,7 @@ import { FAB } from 'react-native-paper';
 import AddRoomModal from '../components/AddRoomModal';
 import FavouritePeoples from '../components/FavouritePeoples';
 import Header from '../components/Header';
+import useUser from '../hooks/useUser';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
