@@ -1,4 +1,10 @@
-import React, { useContext, useState, useLayoutEffect } from 'react';
+import React, {
+	useContext,
+	useState,
+	useLayoutEffect,
+	useRef,
+	useEffect,
+} from 'react';
 import {
 	KeyboardAvoidingView,
 	Pressable,
@@ -16,40 +22,65 @@ import { useLiveMessage } from '../hooks/useLiveMessage';
 import { authContext } from '../lib/authContext';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar, IconButton } from 'react-native-paper';
-import auth from '@react-native-firebase/auth';
+import { addFavouriteRoom, removeFavouriteRoom } from '../lib/roomHelper';
+import useUser from '../hooks/useUser';
 
 const ChatScreen = ({ route }) => {
-	const [fav, setFav] = useState(false);
+	const { userId } = useContext(authContext);
+	const userData = useUser(userId);
+	const [fav, setFav] = useState(null);
+	// console.log(fav);
 	const param = route.params;
-	// console.log(param);
 
 	const navigation = useNavigation();
+
+	useEffect(() => {
+		if (userData) {
+			userData.favouriteRooms.forEach((room) => {
+				if (room.id === param?.id) {
+					setFav(true);
+				}
+			});
+		}
+	}, [userData]);
+
 	useLayoutEffect(() => {
 		navigation.setOptions({
 			headerTitle: `${(param?.name).toUpperCase()}`,
 			headerRight: () => (
 				<View className='flex-row items-center justify-center space-x-6'>
-					<TouchableOpacity
-						onPress={() => {
-							setFav(!fav);
-							console.log('hearted', fav);
-						}}>
-						{fav ? (
+					{fav ? (
+						<TouchableOpacity
+							className=''
+							onPress={() => {
+								setFav(false);
+								removeFavouriteRoom(userId, param);
+								// console.log('hearted', fav);
+							}}>
 							<Ionicons
 								name={'ios-star'}
 								color='white'
 								className=''
 								size={24}
 							/>
-						) : (
+						</TouchableOpacity>
+					) : (
+						<TouchableOpacity
+							className=''
+							onPress={() => {
+								setFav(true);
+								addFavouriteRoom(userId, param);
+								// console.log('hearted', fav);
+							}}>
 							<Ionicons
 								name={'ios-star-outline'}
 								color='white'
 								className=''
 								size={24}
 							/>
-						)}
-					</TouchableOpacity>
+						</TouchableOpacity>
+					)}
+
 					<Pressable onPress={() => navigation.navigate('room', param)}>
 						<Avatar.Text
 							size={42}
@@ -61,7 +92,7 @@ const ChatScreen = ({ route }) => {
 				</View>
 			),
 		});
-	}, []);
+	}, [fav]);
 
 	const sendMessage = async () => {
 		if (message) {

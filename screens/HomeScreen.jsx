@@ -1,6 +1,6 @@
+import { useNavigation } from '@react-navigation/core';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import {
-	Alert,
 	RefreshControl,
 	ScrollView,
 	Text,
@@ -8,25 +8,22 @@ import {
 	View,
 } from 'react-native';
 import ChatItem from '../components/ChatItem';
-import { useNavigation } from '@react-navigation/core';
 import { authContext } from '../lib/authContext';
 
-import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { FAB } from 'react-native-paper';
 import AddRoomModal from '../components/AddRoomModal';
 import FavouritePeoples from '../components/FavouritePeoples';
 import Header from '../components/Header';
-import auth from '@react-native-firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRooms } from '../hooks/useRoom';
-import firestore from '@react-native-firebase/firestore';
-import { ActivityIndicator, FAB } from 'react-native-paper';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
 	const { userId } = useContext(authContext);
 	const [rooms, setRooms] = useState([]);
 
-	const [refreshing, setRefreshing] = React.useState(false);
+	const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
 		setRefreshing(true);
@@ -52,6 +49,7 @@ const HomeScreen = () => {
 			.then((querysnapshot) => {
 				if (querysnapshot.exists) {
 					// console.log(querysnapshot);
+					// console.log(querysnapshot.data());
 					setRooms(querysnapshot.data()?.rooms);
 				}
 			})

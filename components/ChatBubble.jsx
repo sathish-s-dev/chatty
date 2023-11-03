@@ -4,9 +4,9 @@ import { authContext } from '../lib/authContext';
 import { Avatar } from 'react-native-paper';
 
 const ChatBubble = ({ right, message, photoURL, displayName, email }) => {
-	if (email) {
-		console.log(email);
-	}
+	// if (email) {
+	// 	console.log(email);
+	// }
 
 	const authData = useContext(authContext);
 	return (
