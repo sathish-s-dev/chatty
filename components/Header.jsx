@@ -4,19 +4,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { authContext } from '../lib/authContext';
 import auth from '@react-native-firebase/auth';
 import { Avatar, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const cute = require('../assets/cute.webp');
 
 const Header = () => {
+	const navigation = useNavigation();
 	const { authState } = useContext(authContext);
 	const photo = authState?.photoURL;
-	// console.log(photo);
-
-	const [visible, setVisible] = useState(false);
-	// const renderPlacementItem = (title) => <SelectItem title={title} />;
-	const renderToggleButton = () => (
-		<Button onPress={() => setVisible(true)}>TOGGLE POPOVER</Button>
-	);
 
 	return (
 		<SafeAreaView className='p-6 pt-8 bg-slate-950 flex-row justify-between items-center'>
@@ -28,6 +23,7 @@ const Header = () => {
 					onPress={async () => {
 						try {
 							await auth().signOut();
+							navigation.navigate('login');
 						} catch (e) {
 							console.log(e);
 						}

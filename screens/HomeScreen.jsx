@@ -21,22 +21,22 @@ import useUser from '../hooks/useUser';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
-	const { userId } = useContext(authContext);
-	const [rooms, setRooms] = useState([]);
+	const user = useContext(authContext);
 
+	const userData = useUser(user?.userId);
+	const [rooms, setRooms] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
 		setRefreshing(true);
-		// refreshing ? Alert.alert('reload called') : null;
 		setTimeout(() => {
 			setRefreshing(false);
 		}, 1000);
-	}, [userId]);
+	}, []);
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
-		getRooms(userId);
+		getRooms(user?.userId);
 		setTimeout(() => {
 			setRefreshing(false);
 		}, 2000);
@@ -49,8 +49,6 @@ const HomeScreen = () => {
 			.get()
 			.then((querysnapshot) => {
 				if (querysnapshot.exists) {
-					// console.log(querysnapshot);
-					// console.log(querysnapshot.data());
 					setRooms(querysnapshot.data()?.rooms);
 				}
 			})
@@ -58,8 +56,8 @@ const HomeScreen = () => {
 	};
 
 	useEffect(() => {
-		getRooms(userId);
-	}, [userId]);
+		getRooms(user?.userId);
+	}, [user?.userId]);
 
 	useLayoutEffect(() => {
 		if (!auth().currentUser) {
@@ -86,7 +84,7 @@ const HomeScreen = () => {
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
 						Favourite Rooms
 					</Text>
-					<FavouritePeoples />
+					<FavouritePeoples userData={userData} />
 				</View>
 				<View className='flex-1 bg-slate-950 rounded-[34px] p-6 -mt-10'>
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
@@ -97,8 +95,8 @@ const HomeScreen = () => {
 							rooms.map((item, index) => (
 								<ChatItem
 									key={index}
-									name={item.name}
-									id={item.id}
+									name={item?.name}
+									id={item?.id}
 								/>
 							))}
 					</ScrollView>

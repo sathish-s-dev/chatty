@@ -1,13 +1,11 @@
-import { View, Text } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
+import { useEffect, useState } from 'react';
 
 const useUser = (userId) => {
 	const [user, setUser] = useState(null);
 
-	if (userId) {
-		useEffect(() => {
+	useEffect(() => {
+		if (userId) {
 			firestore()
 				.collection('users')
 				.doc(userId)
@@ -16,8 +14,8 @@ const useUser = (userId) => {
 						setUser(querySnapshot.data());
 					}
 				});
-		}, [userId]);
-	}
+		}
+	}, [userId]);
 	return user;
 };
 

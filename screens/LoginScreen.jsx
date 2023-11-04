@@ -54,6 +54,7 @@ const LoginScreen = () => {
 						});
 					// alert(result.id, 'user added');
 					AsyncStorage.setItem('userId', result.id);
+					setUserId(Id);
 				} else {
 					let Id = dbUser.docs[0].id;
 					// alert(Id);

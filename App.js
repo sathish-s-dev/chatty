@@ -59,7 +59,7 @@ export default function App() {
 							component={ChatScreen}
 							options={{
 								headerStyle: {
-									backgroundColor: 'rgb(2,6,3)',
+									backgroundColor: 'rgb(2 6 23)',
 								},
 								headerTintColor: 'rgb(255,255,255)',
 							}}
@@ -96,10 +96,19 @@ export default function App() {
 						<Stack.Screen
 							name='room'
 							component={RoomDetailScreen}
+							options={{
+								headerStyle: {
+									backgroundColor: 'rgb(2 6 23)',
+								},
+								headerTintColor: 'rgb(255,255,255)',
+							}}
 						/>
 					</Stack.Navigator>
 				</NavigationContainer>
-				<StatusBar style='light' />
+				<StatusBar
+					style='auto'
+					// className='bg-transperant'
+				/>
 			</Provider>
 		</PaperProvider>
 	);
