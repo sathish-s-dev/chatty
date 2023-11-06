@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useNavigation } from '@react-navigation/core';
-import { useContext, useLayoutEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import firestore from '@react-native-firebase/firestore';
@@ -30,6 +30,15 @@ const LoginScreen = () => {
 		email: '',
 		password: '',
 	});
+
+	useEffect(() => {
+		if (auth().currentUser) {
+			navigation.reset({
+				index: 0,
+				routes: [{ name: 'home' }],
+			});
+		}
+	}, []);
 
 	async function onAuthStateChanged(user) {
 		try {
@@ -115,7 +124,10 @@ const LoginScreen = () => {
 
 	const hanldeGoogleLogin = () =>
 		onGoogleButtonPress().then(() => {
-			navigation.navigate('home');
+			navigation.reset({
+				index: 0,
+				routes: [{ name: 'home' }],
+			});
 		});
 
 	return (

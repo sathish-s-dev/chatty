@@ -1,10 +1,4 @@
-import React, {
-	useContext,
-	useState,
-	useLayoutEffect,
-	useRef,
-	useEffect,
-} from 'react';
+import React, { useContext, useState, useLayoutEffect, useEffect } from 'react';
 import {
 	KeyboardAvoidingView,
 	Pressable,
@@ -29,7 +23,6 @@ const ChatScreen = ({ route }) => {
 	const { userId } = useContext(authContext);
 	const userData = useUser(userId);
 	const [fav, setFav] = useState(null);
-	// console.log(fav);
 	const param = route.params;
 
 	const navigation = useNavigation();
@@ -121,6 +114,7 @@ const ChatScreen = ({ route }) => {
 
 	// console.log(room);
 	let chats = room?.chat?.messages;
+	console.log(chats?.length);
 	const authState = useContext(authContext);
 	const user = authState?.authState;
 

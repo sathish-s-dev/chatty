@@ -18,6 +18,7 @@ import AddRoomModal from '../components/AddRoomModal';
 import FavouritePeoples from '../components/FavouritePeoples';
 import Header from '../components/Header';
 import useUser from '../hooks/useUser';
+import NotificationComp from '../utils/notification';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
@@ -116,6 +117,7 @@ const HomeScreen = () => {
 				setModalVisible={setModalVisible}
 				setRooms={setRooms}
 			/>
+			<NotificationComp />
 		</>
 	);
 };

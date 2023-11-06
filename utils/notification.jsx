@@ -6,12 +6,12 @@ import * as Notifications from 'expo-notifications';
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
 		shouldShowAlert: true,
-		shouldPlaySound: false,
+		shouldPlaySound: true,
 		shouldSetBadge: false,
 	}),
 });
 
-export default function Notification() {
+export default function NotificationComp() {
 	const [expoPushToken, setExpoPushToken] = useState('');
 	const [notification, setNotification] = useState(false);
 	const notificationListener = useRef();
@@ -68,11 +68,11 @@ export default function Notification() {
 	);
 }
 
-async function schedulePushNotification() {
+export async function schedulePushNotification(title, body) {
 	await Notifications.scheduleNotificationAsync({
 		content: {
-			title: "You've got mail! 📬",
-			body: 'Here is the notification body',
+			title: title || 'New Message',
+			body: body || 'hi there',
 			data: { data: 'goes here' },
 		},
 		trigger: { seconds: 2 },

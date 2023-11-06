@@ -35,7 +35,8 @@
     "tailwind-merge": "^1.14.0",
     "uuid": "^9.0.1",
     "expo-notifications": "~0.20.1",
-    "expo-device": "~5.4.0"
+    "expo-device": "~5.4.0",
+    "expo-local-authentication": "~13.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
