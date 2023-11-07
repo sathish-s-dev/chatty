@@ -63,7 +63,7 @@ const LoginScreen = () => {
 						});
 					// alert(result.id, 'user added');
 					AsyncStorage.setItem('userId', result.id);
-					setUserId(Id);
+					setUserId(result.id);
 				} else {
 					let Id = dbUser.docs[0].id;
 					// alert(Id);
@@ -93,21 +93,24 @@ const LoginScreen = () => {
 		setView(!view);
 	};
 
-	// const handleLogin = async () => {
-	// 	if (!user.email || !user.password) return;
-	// 	try {
-	// 		const result = await signInWithEmailAndPassword(
-	// 			auth,
-	// 			user.email,
-	// 			user.password
-	// 		);
-	// 		// console.log(result);
-	// 		AsyncStorage.setItem('user', JSON.stringify({ email: user.email }));
-	// 		navigation.navigate('home');
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
+	const handleLogin = async () => {
+		if (!user.email || !user.password) return;
+		try {
+			const result = await auth().signInWithEmailAndPassword(
+				user.email,
+				user.password
+			);
+			console.log(result);
+			navigation.reset({
+				index: 0,
+				routes: [{ name: 'home' }],
+			});
+			// AsyncStorage.setItem('user', JSON.stringify({ email: user.email }));
+			// navigation.navigate('home');
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	async function onGoogleButtonPress() {
 		try {
@@ -138,6 +141,7 @@ const LoginScreen = () => {
 			<View className='border border-slate-600 rounded-lg w-full flex-row items-center pr-3'>
 				<Input
 					value={user.email}
+					className={'text-white'}
 					handleChange={(text) =>
 						setUser({
 							...user,
@@ -157,8 +161,8 @@ const LoginScreen = () => {
 			<View className='border border-slate-600 rounded-lg w-full flex-row items-center pr-3'>
 				<Input
 					value={user.password}
+					className={'text-white'}
 					placeholder='********'
-					className={'text-lg'}
 					secure={view}
 					handleChange={(text) =>
 						setUser({
@@ -186,6 +190,7 @@ const LoginScreen = () => {
 
 			<Button
 				textColor='rgb(241 245 249)'
+				onPress={handleLogin}
 				className='w-full rounded-lg bg-blue-600 text-slate-100 p-1'>
 				Login
 			</Button>

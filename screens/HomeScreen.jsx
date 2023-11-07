@@ -19,10 +19,14 @@ import FavouritePeoples from '../components/FavouritePeoples';
 import Header from '../components/Header';
 import useUser from '../hooks/useUser';
 import NotificationComp from '../utils/notification';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
 	const user = useContext(authContext);
+
+	const { authState, setAuthState, userId } = useContext(authContext);
+	console.log('auth: ', authState, 'userId:', userId);
 
 	const userData = useUser(user?.userId);
 	const [rooms, setRooms] = useState([]);
@@ -80,7 +84,7 @@ const HomeScreen = () => {
 						onRefresh={onRefresh}
 					/>
 				}>
-				<Header />
+				{/* <Header /> */}
 				<View className='h-52 bg-blue-700 rounded-[34px] mt-5'>
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
 						Favourite Rooms
@@ -117,7 +121,7 @@ const HomeScreen = () => {
 				setModalVisible={setModalVisible}
 				setRooms={setRooms}
 			/>
-			<NotificationComp />
+			{/* <NotificationComp /> */}
 		</>
 	);
 };

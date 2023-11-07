@@ -35,7 +35,20 @@ const Header = () => {
 								source={{ uri: photo }}
 							/>
 						</View>
-					) : null}
+					) : (
+						<View className='border-[3px] justify-center items-center x p-1 border-blue-600 rounded-full hover:animate-spin'>
+							<Avatar.Text
+								size={48}
+								label={authState?.email?.charAt(0)}
+								labelStyle={{
+									color: 'rgb(203 213 225)',
+									fontWeight: 900,
+									textTransform: 'uppercase',
+								}}
+								className='uppercase text-slate-100'
+							/>
+						</View>
+					)}
 				</TouchableOpacity>
 			</View>
 		</SafeAreaView>

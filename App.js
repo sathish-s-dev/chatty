@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,10 +14,16 @@ import ProfileDetailScreen from './screens/ProfileDetailScreen';
 import { Provider } from './lib/authContext';
 import RoomDetailScreen from './screens/RoomDetailScreen';
 import { StatusBar } from 'expo-status-bar';
+import * as LocalAuthentication from 'expo-local-authentication';
+import { BackHandler } from 'react-native';
+import { TopTabNavigator } from './components/TopTabNavigator';
+import Header from './components/Header';
 
 export default function App() {
 	const [authState, setAuthState] = useState(null);
 	const [userId, setUserId] = useState(null);
+	const [auth, setAuth] = useState(null);
+	const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
 	const getUser = async () => {
 		const result = await AsyncStorage.getItem('user');
@@ -30,6 +36,22 @@ export default function App() {
 	};
 
 	useEffect(() => {
+		(async () => {
+			const compatible = await LocalAuthentication.hasHardwareAsync();
+			setIsBiometricSupported(compatible);
+			// LocalAuthentication.supportedAuthenticationTypesAsync();
+
+			let result = await LocalAuthentication.authenticateAsync({
+				promptMessage: 'Login with biometric',
+				fallbackLabel: 'close',
+			});
+			console.log(result);
+			if (!result?.success) {
+				// BackHandler.exitApp();
+				// setAuth(false);
+			}
+			setAuth(true);
+		})();
 		getUser();
 	}, []);
 
@@ -48,10 +70,9 @@ export default function App() {
 					<Stack.Navigator initialRouteName={'splash'}>
 						<Stack.Screen
 							name='home'
-							component={HomeScreen}
+							component={TopTabNavigator}
 							options={{
-								// header: () => <Header />,
-								headerShown: false,
+								header: () => <Header />,
 							}}
 						/>
 						<Stack.Screen

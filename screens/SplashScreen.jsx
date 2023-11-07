@@ -1,5 +1,5 @@
 import { Ionicons, Feather } from '@expo/vector-icons';
-import React, { useContext, useEffect, useLayoutEffect } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Image, Text, TouchableOpacity, View, BackHandler } from 'react-native';
 // import useUser from '../hooks/useUser';
 import { authContext } from '../lib/authContext';
@@ -8,29 +8,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Splash from '../components/Splash';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import * as LocalAuthentication from 'expo-local-authentication';
 
 const SplashScreen = () => {
 	const navigation = useNavigation();
-	const { authState, setAuthState } = useContext(authContext);
-	const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+	const { authState, setAuthState, userId } = useContext(authContext);
+	console.log('auth: ', authState, 'userId:', userId);
 
-	console.log(isBiometricSupported);
 	useEffect(() => {
-		(async () => {
-			const compatible = await LocalAuthentication.hasHardwareAsync();
-			setIsBiometricSupported(compatible);
-			// LocalAuthentication.supportedAuthenticationTypesAsync();
-
-			let result = await LocalAuthentication.authenticateAsync({
-				promptMessage: 'Login with biometric',
-				fallbackLabel: 'close',
-			});
-			console.log(result);
-			if (!result?.success) {
-				BackHandler.exitApp();
-			}
-		})();
 		if (auth()?.currentUser) {
 			navigation.reset({
 				index: 0,

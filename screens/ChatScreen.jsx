@@ -21,6 +21,7 @@ import useUser from '../hooks/useUser';
 
 const ChatScreen = ({ route }) => {
 	const { userId } = useContext(authContext);
+	console.log(userId);
 	const userData = useUser(userId);
 	const [fav, setFav] = useState(null);
 	const param = route.params;
@@ -29,7 +30,7 @@ const ChatScreen = ({ route }) => {
 
 	useEffect(() => {
 		if (userData) {
-			userData.favouriteRooms.forEach((room) => {
+			userData.favouriteRooms?.forEach((room) => {
 				if (room.id === param?.id) {
 					setFav(true);
 				}
@@ -111,6 +112,7 @@ const ChatScreen = ({ route }) => {
 	};
 
 	const room = useLiveMessage(param?.id);
+	console.log(room);
 
 	// console.log(room);
 	let chats = room?.chat?.messages;

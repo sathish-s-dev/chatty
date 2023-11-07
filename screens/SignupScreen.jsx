@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import Input from '../components/Input';
-// import { createUserWithEmailAndPassword } from 'firebase/auth';
-// import { auth } from '../firebase.config';
+import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 
 import { Button } from 'react-native-paper';
@@ -26,12 +25,11 @@ const SignupScreen = () => {
 			alert('passwords must match');
 		} else {
 			try {
-				const result = await createUserWithEmailAndPassword(
-					auth,
+				const result = await auth().createUserWithEmailAndPassword(
 					email,
 					password
 				);
-				// console.log(result);
+				console.log(result);
 				navigation.navigate('profile-detail');
 			} catch (error) {
 				console.log(error);
