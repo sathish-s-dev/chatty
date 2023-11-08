@@ -41,7 +41,7 @@ export default function App() {
 			});
 			console.log(result);
 			if (!result?.success) {
-				// BackHandler.exitApp();
+				BackHandler.exitApp();
 				// setAuth(false);
 			}
 			setAuth(true);
