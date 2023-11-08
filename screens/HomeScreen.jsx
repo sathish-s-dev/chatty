@@ -20,15 +20,15 @@ import Header from '../components/Header';
 import useUser from '../hooks/useUser';
 import NotificationComp from '../utils/notification';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useUserStore } from '../store/useUserStore';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
-	const user = useContext(authContext);
 
-	const { authState, setAuthState, userId } = useContext(authContext);
-	console.log('auth: ', authState, 'userId:', userId);
+	const userId = useUserStore((state) => state.userId);
+	// console.log(userId, 'new user');
 
-	const userData = useUser(user?.userId);
+	const userData = useUser(userId);
 	const [rooms, setRooms] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
 
@@ -41,13 +41,14 @@ const HomeScreen = () => {
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
-		getRooms(user?.userId);
+		getRooms(userId);
 		setTimeout(() => {
 			setRefreshing(false);
 		}, 2000);
 	}, []);
 
 	const getRooms = (userId) => {
+		console.log(userId);
 		firestore()
 			.collection('users')
 			.doc(userId)
@@ -61,8 +62,8 @@ const HomeScreen = () => {
 	};
 
 	useEffect(() => {
-		getRooms(user?.userId);
-	}, [user?.userId]);
+		getRooms(userId);
+	}, [userId]);
 
 	useLayoutEffect(() => {
 		if (!auth().currentUser) {

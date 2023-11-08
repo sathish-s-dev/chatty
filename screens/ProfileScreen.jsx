@@ -6,88 +6,80 @@ import {
 	ScrollView,
 	Alert,
 } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
-import { authContext } from '../lib/authContext';
+import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { Feather } from '@expo/vector-icons';
 import { Button, Chip } from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import storage from '@react-native-firebase/storage';
-import * as ImagePicker from 'expo-image-picker';
+import { pickImage } from '../utils/pickImage';
+import { useUserStore } from '../store/useUserStore';
 
 const ProfileScreen = () => {
-	const { userId } = useContext(authContext);
+	const userId = useUserStore((state) => state.userId);
+	const user = useUserStore((state) => state.user);
+	const setUser = useUserStore((state) => state.setUser);
 	const navigation = useNavigation();
-	const [user, setUser] = useState(null);
+	// const [user, setUser] = useState(null);
 	const [image, setImage] = useState(null);
-	const [progress, setProgress] = useState(0);
-
+	const [uploading, setUploading] = useState(false);
+	const [transferred, setTransferred] = useState(0);
 	console.log(image);
 
-	const pickImage = async () => {
-		// No permissions request is necessary for launching the image library
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [4, 3],
-			quality: 0.5,
+	// console.log(image);
+
+	const uploadImage = async () => {
+		const { uri } = image;
+		const filename = uri.substring(uri.lastIndexOf('/') + 1);
+		const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+		setUploading(true);
+		setTransferred(0);
+		const task = storage().ref(filename).putFile(uploadUri);
+		// set progress state
+		task.on('state_changed', (snapshot) => {
+			setTransferred(
+				Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 10000
+			);
+		});
+		task.then(async (value) => {
+			try {
+				const uri = await storage()
+					.ref(value?.metadata.fullPath)
+					.getDownloadURL();
+				console.log(uri);
+				setUser({ ...user, photoURL: uri });
+				firestore()
+					.collection('users')
+					.doc(userId)
+					.get()
+					.then(async (querysnapshot) => {
+						if (querysnapshot.exists) {
+							let userRoom = await firestore()
+								.collection('users')
+								.doc(userId)
+								.update({
+									photoURL: uri,
+								});
+						}
+					});
+			} catch (error) {
+				console.log(error);
+			}
 		});
 
-		console.log(result);
-
-		if (!result.canceled) {
-			setImage(result.assets[0].uri);
-			// uploadImage(result.assets[0].uri, 'image');
-		}
-	};
-	async function uploadImage(uri, fileType) {
-		const response = await fetch(uri);
-		const blob = await response.blob();
-		const storageRef = ref(storage, 'Stuff/' + new Date().getTime());
-
-		const uploadTask = uploadBytesResumable(storageRef, blob);
-
-		// listen for events
-		uploadTask.on(
-			'state_changed',
-			(snapshot) => {
-				const progress =
-					(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-				console.log('Upload is ' + progress + '% done');
-				setProgress(parseInt(progress.toFixed()));
-			},
-			(error) => {
-				// handle error
-			},
-			() => {
-				getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-					console.log('File available at', downloadURL);
-					// save record
-					// await saveRecord(fileType, downloadURL, new Date().toISOString());
-					setImage('');
-					// setVideo('');
-				});
-			}
-		);
-	}
-	console.log(user);
-	useEffect(() => {
 		try {
-			const unsubscribe = firestore()
-				.collection('users')
-				.doc(userId)
-				.get()
-				.then((querysnapshot) => {
-					if (querysnapshot.exists) {
-						// console.log(querysnapshot.data());
-						setUser(querysnapshot.data());
-					}
-				});
-		} catch (error) {
-			console.log(error);
+			await task;
+		} catch (e) {
+			console.error(e);
 		}
-	}, []);
+		setUploading(false);
+		Alert.alert(
+			'Photo uploaded!',
+			'Your photo has been uploaded to Firebase Cloud Storage!'
+		);
+		setImage(null);
+	};
 
 	return (
 		<ScrollView className='flex-1 bg-slate-950 p-4'>
@@ -96,10 +88,10 @@ const ProfileScreen = () => {
 					<View>
 						<TouchableOpacity
 							className='self-center'
-							onPress={pickImage}>
+							onPress={() => pickImage(setImage)}>
 							{user?.photoURL ? (
 								<Image
-									source={{ uri: user?.photoURL }}
+									source={{ uri: image?.uri || user?.photoURL }}
 									className='w-28 aspect-square rounded-xl'
 								/>
 							) : (
@@ -112,14 +104,14 @@ const ProfileScreen = () => {
 								</View>
 							)}
 						</TouchableOpacity>
-						{/* <Button
-							onPress={() => console.log('called')}
+						<Button
+							onPress={uploadImage}
 							className='self-center'
 							labelStyle={{
 								color: 'red',
 							}}>
 							change profile pic
-						</Button> */}
+						</Button>
 					</View>
 					<View className='space-y-3'>
 						<View>
@@ -152,7 +144,7 @@ const ProfileScreen = () => {
 							<ScrollView
 								horizontal
 								className='gap-4 py-2'>
-								{user?.rooms.length > 0 ? (
+								{user?.rooms?.length > 0 ? (
 									user?.rooms?.map((item, i) => (
 										<Chip
 											mode='outlined'

@@ -1,46 +1,40 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
+import { NavigationContainer } from '@react-navigation/native';
 import 'expo-dev-client';
+import { useEffect, useState } from 'react';
 import { PaperProvider } from 'react-native-paper';
 
-import ChatScreen from './screens/ChatScreen';
-import HomeScreen from './screens/HomeScreen';
-import LoginScreen from './screens/LoginScreen';
-import SplashScreen from './screens/SplashScreen';
-import SignupScreen from './screens/SignupScreen';
-import ProfileDetailScreen from './screens/ProfileDetailScreen';
-import { Provider } from './lib/authContext';
-import RoomDetailScreen from './screens/RoomDetailScreen';
-import { StatusBar } from 'expo-status-bar';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { StatusBar } from 'expo-status-bar';
+import { Provider } from './lib/authContext';
 import { BackHandler } from 'react-native';
-import { TopTabNavigator } from './components/TopTabNavigator';
-import Header from './components/Header';
+import StackNavigator from './navigators/StackNavigator';
+import { useUserStore } from './store/useUserStore';
 
 export default function App() {
 	const [authState, setAuthState] = useState(null);
 	const [userId, setUserId] = useState(null);
 	const [auth, setAuth] = useState(null);
 	const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+	const setUser = useUserStore((state) => state.setUser);
+	const setId = useUserStore((state) => state.setUserId);
 
 	const getUser = async () => {
-		const result = await AsyncStorage.getItem('user');
 		const Id = await AsyncStorage.getItem('userId');
-
-		let user = JSON.parse(result);
-		// alert(Id);
-		setAuthState(user);
+		const result = await firestore().collection('users').doc(Id).get();
+		if (result.exists) {
+			setUser(result.data());
+			setAuthState(result.data());
+		}
 		setUserId(Id);
+		setId(Id);
 	};
 
 	useEffect(() => {
 		(async () => {
 			const compatible = await LocalAuthentication.hasHardwareAsync();
 			setIsBiometricSupported(compatible);
-			// LocalAuthentication.supportedAuthenticationTypesAsync();
-
 			let result = await LocalAuthentication.authenticateAsync({
 				promptMessage: 'Login with biometric',
 				fallbackLabel: 'close',
@@ -55,8 +49,6 @@ export default function App() {
 		getUser();
 	}, []);
 
-	const Stack = createNativeStackNavigator();
-
 	return (
 		<PaperProvider>
 			<Provider
@@ -67,69 +59,9 @@ export default function App() {
 					setUserId,
 				}}>
 				<NavigationContainer>
-					<Stack.Navigator initialRouteName={'splash'}>
-						<Stack.Screen
-							name='home'
-							component={TopTabNavigator}
-							options={{
-								header: () => <Header />,
-							}}
-						/>
-						<Stack.Screen
-							name='chat'
-							component={ChatScreen}
-							options={{
-								headerStyle: {
-									backgroundColor: 'rgb(2 6 23)',
-								},
-								headerTintColor: 'rgb(255,255,255)',
-							}}
-						/>
-
-						<Stack.Screen
-							name='splash'
-							component={SplashScreen}
-							options={{
-								headerShown: false,
-							}}
-						/>
-						<Stack.Screen
-							name='signup'
-							component={SignupScreen}
-							options={{
-								headerShown: false,
-							}}
-						/>
-						<Stack.Screen
-							name='login'
-							component={LoginScreen}
-							options={{
-								headerShown: false,
-							}}
-						/>
-						<Stack.Screen
-							name='profile-detail'
-							component={ProfileDetailScreen}
-							options={{
-								headerShown: false,
-							}}
-						/>
-						<Stack.Screen
-							name='room'
-							component={RoomDetailScreen}
-							options={{
-								headerStyle: {
-									backgroundColor: 'rgb(2 6 23)',
-								},
-								headerTintColor: 'rgb(255,255,255)',
-							}}
-						/>
-					</Stack.Navigator>
+					<StackNavigator />
 				</NavigationContainer>
-				<StatusBar
-					style='auto'
-					// className='bg-transperant'
-				/>
+				<StatusBar style='auto' />
 			</Provider>
 		</PaperProvider>
 	);

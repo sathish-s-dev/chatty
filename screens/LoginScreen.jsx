@@ -10,6 +10,7 @@ import firestore from '@react-native-firebase/firestore';
 import { Button, FAB, IconButton } from 'react-native-paper';
 import Input from '../components/Input';
 import { authContext } from '../lib/authContext';
+import { useUserStore } from '../store/useUserStore';
 
 // android   519735730047-bduu795a5i05h2er85kkm6i22c30r02e.apps.googleusercontent.com
 
@@ -19,10 +20,11 @@ const LoginScreen = () => {
 			'957399145425-htb7cekdnef9qqpq4h0pfs26438rseqc.apps.googleusercontent.com',
 	});
 
-	const { setUserId } = useContext(authContext);
+	// const { setUserId } = useContext(authContext);
+	const setUserId = useUserStore((state) => state.setUserId);
+	const setAuthUser = useUserStore((state) => state.setUser);
 
 	const [initializing, setInitializing] = useState(true);
-	const { setAuthState } = useContext(authContext);
 
 	const navigation = useNavigation();
 	const [view, setView] = useState(true);
@@ -43,35 +45,34 @@ const LoginScreen = () => {
 	async function onAuthStateChanged(user) {
 		try {
 			if (user) {
-				setAuthState(user);
 				AsyncStorage.setItem('user', JSON.stringify(user));
 				const dbUser = await firestore()
 					.collection('users')
 					.where('email', '==', user.email)
 					.get();
 				if (dbUser.empty) {
-					const result = await firestore()
-						.collection('users')
-						.add({
-							email: user.email,
-							name: user.displayName,
-							photoURL: user.photoURL,
-							full: JSON.stringify(user),
-							rooms: [],
-							friends: [],
-							favouriteFriends: [],
-						});
+					let newUser = {
+						email: user.email,
+						name: user.displayName,
+						photoURL: user.photoURL,
+						full: JSON.stringify(user),
+						rooms: [],
+						friends: [],
+						favouriteFriends: [],
+					};
+					const result = await firestore().collection('users').add(newUser);
 					// alert(result.id, 'user added');
 					AsyncStorage.setItem('userId', result.id);
 					setUserId(result.id);
+					setAuthUser(newUser);
 				} else {
 					let Id = dbUser.docs[0].id;
-					// alert(Id);
 					AsyncStorage.setItem('userId', Id);
 					setUserId(Id);
+					setAuthUser(dbUser.docs[0].data());
 				}
 			} else {
-				setAuthState(null);
+				setAuthUser(null);
 				AsyncStorage.removeItem('user');
 				AsyncStorage.removeItem('userId');
 				navigation.navigate('login');

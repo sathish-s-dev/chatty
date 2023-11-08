@@ -12,14 +12,14 @@ import { Ionicons } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
 import { authContext } from '../lib/authContext';
 import Button from './Button';
+import { useUserStore } from '../store/useUserStore';
 
 const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 	const [roomName, setRoomName] = useState('');
 	const [roomId, setRoomId] = useState('');
 	const [create, setCreate] = useState(true);
 
-	const userData = useContext(authContext);
-	let userId = userData?.userId;
+	const userId = useUserStore((state) => state.userId);
 
 	useLayoutEffect(() => {
 		function onResult(QuerySnapshot) {
@@ -47,18 +47,23 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 				});
 
 				console.log('created');
-				let userRoom = await firestore()
-					.collection('users')
-					.doc(userId)
-					.update({
-						rooms: firestore.FieldValue.arrayUnion({
-							id: room.id,
-							name: roomName,
-						}),
-					});
-				console.log('success');
-				setRoomName('');
-				setModalVisible(false);
+				let userRoom = await firestore().collection('users').doc(userId).get();
+				if (userRoom.exists) {
+					console.log(userRoom.data()?.rooms);
+					let add = await firestore()
+						.collection('users')
+						.doc(userId)
+						.update({
+							rooms: firestore.FieldValue.arrayUnion({
+								id: room.id,
+								name: roomName,
+							}),
+						});
+
+					console.log('success');
+					setRoomName('');
+					setModalVisible(false);
+				}
 			} catch (error) {
 				console.error(error);
 			}

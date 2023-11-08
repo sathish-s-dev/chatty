@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Avatar, IconButton } from 'react-native-paper';
 import { addFavouriteRoom, removeFavouriteRoom } from '../lib/roomHelper';
 import useUser from '../hooks/useUser';
+import { useUserStore } from '../store/useUserStore';
 
 const ChatScreen = ({ route }) => {
 	const { userId } = useContext(authContext);
@@ -95,8 +96,8 @@ const ChatScreen = ({ route }) => {
 					.doc(`room/${param?.id}`)
 					.update({
 						messages: firestore.FieldValue.arrayUnion({
-							name: user.displayName,
-							photoUrl: `${user.photoURL}`,
+							name: user?.name,
+							photoUrl: `${user?.photoURL}`,
 							message,
 							email: user?.email,
 						}),
@@ -117,8 +118,8 @@ const ChatScreen = ({ route }) => {
 	// console.log(room);
 	let chats = room?.chat?.messages;
 	console.log(chats?.length);
-	const authState = useContext(authContext);
-	const user = authState?.authState;
+
+	let user = useUserStore((state) => state.user);
 
 	const [message, setMessage] = useState('');
 
@@ -128,7 +129,7 @@ const ChatScreen = ({ route }) => {
 				<View className='py-10'>
 					{chats &&
 						chats.map((item, i) =>
-							item.name === user.displayName ? (
+							item.name === user.name ? (
 								<ChatBubble
 									key={i}
 									message={item.message}

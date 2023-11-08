@@ -4,15 +4,12 @@ import { Image, Text, TouchableOpacity, View, BackHandler } from 'react-native';
 // import useUser from '../hooks/useUser';
 import { authContext } from '../lib/authContext';
 import auth from '@react-native-firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Splash from '../components/Splash';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 const SplashScreen = () => {
 	const navigation = useNavigation();
-	const { authState, setAuthState, userId } = useContext(authContext);
-	console.log('auth: ', authState, 'userId:', userId);
 
 	useEffect(() => {
 		if (auth()?.currentUser) {
@@ -20,7 +17,6 @@ const SplashScreen = () => {
 				index: 0,
 				routes: [{ name: 'home' }],
 			});
-			setAuthState(auth().currentUser);
 		}
 	}, []);
 	return (
