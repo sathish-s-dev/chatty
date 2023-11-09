@@ -17,14 +17,13 @@ const Header = () => {
 	return (
 		<SafeAreaView className='p-6 pt-8 bg-slate-950 flex-row justify-between items-center'>
 			<View>
-				<Text className='text-2xl font-semibold text-slate-100'>Messages</Text>
+				<Text className='text-2xl font-bold text-slate-100'>Chatty</Text>
 			</View>
 			<View>
 				<TouchableOpacity
 					onPress={async () => {
 						try {
-							await auth().signOut();
-							navigation.navigate('login');
+							navigation.navigate('profile');
 						} catch (e) {
 							console.log(e);
 						}

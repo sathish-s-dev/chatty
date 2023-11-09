@@ -1,6 +1,6 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
-import React, { useContext } from 'react';
-import { authContext } from '../lib/authContext';
+import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Avatar } from 'react-native-paper';
 
 const ChatBubble = ({ right, message, photoURL, displayName, email }) => {
@@ -8,21 +8,26 @@ const ChatBubble = ({ right, message, photoURL, displayName, email }) => {
 	// 	console.log(email);
 	// }
 
-	const authData = useContext(authContext);
+	const navigation = useNavigation();
+
 	return (
 		<View>
 			{right ? (
-				<View className='flex-row space-x-2 items-center justify-end my-2'>
-					<View className='bg-blue-700 max-w-[200px] p-3 px-6 rounded-full rounded-br-none'>
+				<View className='flex-row space-x-2 items-center justify-end my-3'>
+					<View className='bg-blue-700 max-w-[300px] p-3 px-6 rounded-full rounded-br-none'>
 						<Text className='text-slate-50 text-[14px]'>{message}</Text>
 					</View>
 				</View>
 			) : (
-				<View className='flex-row space-x-2 items-end my-2'>
+				<View className='flex-row space-x-2 items-end my-3'>
 					{photoURL ? (
 						<TouchableOpacity
 							onPress={() => {
-								console.log(email);
+								navigation.navigate('friend', {
+									email,
+									displayName,
+									photoURL,
+								});
 							}}>
 							<Avatar.Image
 								source={{ uri: photoURL }}
@@ -36,7 +41,7 @@ const ChatBubble = ({ right, message, photoURL, displayName, email }) => {
 							</Text>
 						</View>
 					)}
-					<View className='bg-slate-50/20 max-w-[200px] p-3 px-6 rounded-full rounded-bl-none'>
+					<View className='bg-slate-50/20 max-w-[300px] p-3 px-6 rounded-full rounded-bl-none'>
 						<Text className='text-slate-50 text-[14px]'>{message}</Text>
 					</View>
 				</View>

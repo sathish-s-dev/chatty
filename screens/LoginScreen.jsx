@@ -3,13 +3,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useNavigation } from '@react-navigation/core';
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import firestore from '@react-native-firebase/firestore';
 import { Button, FAB, IconButton } from 'react-native-paper';
 import Input from '../components/Input';
-import { authContext } from '../lib/authContext';
 import { useUserStore } from '../store/useUserStore';
 
 // android   519735730047-bduu795a5i05h2er85kkm6i22c30r02e.apps.googleusercontent.com
@@ -70,6 +69,7 @@ const LoginScreen = () => {
 					AsyncStorage.setItem('userId', Id);
 					setUserId(Id);
 					setAuthUser(dbUser.docs[0].data());
+					console.log('user', dbUser.docs[0].data());
 				}
 			} else {
 				setAuthUser(null);

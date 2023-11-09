@@ -87,7 +87,7 @@ const ProfileScreen = () => {
 				<View className='w-full border border-slate-600/20 space-y-5 rounded-2xl p-6 flex-1'>
 					<View>
 						<TouchableOpacity
-							className='self-center'
+							className='self-center pb-4'
 							onPress={() => pickImage(setImage)}>
 							{user?.photoURL ? (
 								<Image
@@ -104,14 +104,23 @@ const ProfileScreen = () => {
 								</View>
 							)}
 						</TouchableOpacity>
-						<Button
-							onPress={uploadImage}
-							className='self-center'
-							labelStyle={{
-								color: 'red',
-							}}>
-							change profile pic
-						</Button>
+						{image && (
+							<Button
+								onPress={uploadImage}
+								className='self-center space-x-4'
+								labelStyle={{
+									color: 'green',
+									fontSize: 18,
+									flexDirection: 'column',
+								}}>
+								<Feather
+									name='upload'
+									style={{ marginRight: 5 }}
+									size={18}
+								/>
+								upload
+							</Button>
+						)}
 					</View>
 					<View className='space-y-3'>
 						<View>

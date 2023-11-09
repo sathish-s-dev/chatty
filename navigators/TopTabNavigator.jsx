@@ -1,8 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import Header from './Header';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 import ProfileScreen from '../screens/ProfileScreen';
 import { Feather } from '@expo/vector-icons';
 
@@ -46,11 +45,11 @@ export function TopTabNavigator() {
 				component={HomeScreen}
 				options={config('home')}
 			/>
-			<Tab.Screen
+			{/* <Tab.Screen
 				name='settings'
 				component={SettingsScreen}
 				options={config('settings')}
-			/>
+			/> */}
 			<Tab.Screen
 				name='profile'
 				component={ProfileScreen}

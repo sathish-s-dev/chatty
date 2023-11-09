@@ -6,12 +6,13 @@ import { useContext } from 'react';
 import { authContext } from '../lib/authContext';
 import { leaveRoom } from '../lib/roomHelper';
 import { Ionicons } from '@expo/vector-icons';
+import { useUserStore } from '../store/useUserStore';
 
 const RoomDetailScreen = ({ route, navigation }) => {
 	const param = route.params;
 	console.log(param);
 
-	const { userId } = useContext(authContext);
+	const userId = useUserStore((state) => state.userId);
 
 	const copyToClipboard = async (id) => {
 		await Clipboard.setStringAsync(id);

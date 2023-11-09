@@ -6,9 +6,10 @@ import SignupScreen from '../screens/SignupScreen';
 import SplashScreen from '../screens/SplashScreen';
 import RoomDetailScreen from '../screens/RoomDetailScreen';
 import ChatScreen from '../screens/ChatScreen';
-import { TopTabNavigator } from '../components/TopTabNavigator';
+import { TopTabNavigator } from './TopTabNavigator';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Header from '../components/Header';
+import FriendScreen from '../screens/FriendScreen';
 
 const StackNavigator = () => {
 	const Stack = createNativeStackNavigator();
@@ -68,6 +69,14 @@ const StackNavigator = () => {
 					headerStyle: {
 						backgroundColor: 'rgb(2 6 23)',
 					},
+					headerTintColor: 'rgb(255,255,255)',
+				}}
+			/>
+			<Stack.Screen
+				name='friend'
+				component={FriendScreen}
+				options={{
+					headerStyle: {backgroundColor: 'rgb(2 6 23)'},
 					headerTintColor: 'rgb(255,255,255)',
 				}}
 			/>

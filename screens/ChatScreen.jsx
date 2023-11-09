@@ -1,4 +1,4 @@
-import React, { useContext, useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect, useRef } from 'react';
 import {
 	KeyboardAvoidingView,
 	Pressable,
@@ -13,7 +13,6 @@ import firestore from '@react-native-firebase/firestore';
 
 import { Ionicons } from '@expo/vector-icons';
 import { useLiveMessage } from '../hooks/useLiveMessage';
-import { authContext } from '../lib/authContext';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar, IconButton } from 'react-native-paper';
 import { addFavouriteRoom, removeFavouriteRoom } from '../lib/roomHelper';
@@ -21,11 +20,12 @@ import useUser from '../hooks/useUser';
 import { useUserStore } from '../store/useUserStore';
 
 const ChatScreen = ({ route }) => {
-	const { userId } = useContext(authContext);
-	console.log(userId);
+	const userId = useUserStore((state) => state.userId);
 	const userData = useUser(userId);
 	const [fav, setFav] = useState(null);
 	const param = route.params;
+
+	const chatRef = useRef(null);
 
 	const navigation = useNavigation();
 
@@ -37,7 +37,15 @@ const ChatScreen = ({ route }) => {
 				}
 			});
 		}
-	}, [userData]);
+	}, [userData?.favouriteRooms]);
+
+	useLayoutEffect(() => {
+		setTimeout(() => {
+			chatRef?.current.scrollToEnd({
+				animated: true,
+			});
+		}, 500);
+	}, []);
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -103,7 +111,12 @@ const ChatScreen = ({ route }) => {
 						}),
 						lastMessage: message,
 					})
-					.then((val) => console.log('added message', val));
+					.then((val) => {
+						console.log('added message', val);
+						chatRef?.current.scrollToEnd({
+							animated: true,
+						});
+					});
 			} catch (error) {
 				console.log(error);
 			}
@@ -113,11 +126,11 @@ const ChatScreen = ({ route }) => {
 	};
 
 	const room = useLiveMessage(param?.id);
-	console.log(room);
+	// console.log(room);
 
 	// console.log(room);
 	let chats = room?.chat?.messages;
-	console.log(chats?.length);
+	console.log('chat length', chats?.length);
 
 	let user = useUserStore((state) => state.user);
 
@@ -125,14 +138,17 @@ const ChatScreen = ({ route }) => {
 
 	return (
 		<>
-			<ScrollView className='bg-slate-950 px-4 relative'>
-				<View className='py-10'>
+			<ScrollView
+				className='bg-slate-950 px-4 relative'
+				ref={chatRef}>
+				<View className='space-y-4 py-4'>
 					{chats &&
-						chats.map((item, i) =>
-							item.name === user.name ? (
+						chats.map((item, i) => {
+							console.log(item);
+							return item.name === user.name ? (
 								<ChatBubble
 									key={i}
-									message={item.message}
+									message={item?.message}
 									right
 									email={item?.email}
 								/>
@@ -144,8 +160,8 @@ const ChatScreen = ({ route }) => {
 									displayName={item?.name}
 									email={item?.email}
 								/>
-							)
-						)}
+							);
+						})}
 				</View>
 			</ScrollView>
 			<NewMessage

@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
 	RefreshControl,
 	ScrollView,
@@ -8,7 +8,6 @@ import {
 	View,
 } from 'react-native';
 import ChatItem from '../components/ChatItem';
-import { authContext } from '../lib/authContext';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
@@ -48,7 +47,7 @@ const HomeScreen = () => {
 	}, []);
 
 	const getRooms = (userId) => {
-		console.log(userId);
+		console.log('userId from getRooms', userId);
 		firestore()
 			.collection('users')
 			.doc(userId)
@@ -58,7 +57,7 @@ const HomeScreen = () => {
 					setRooms(querysnapshot.data()?.rooms);
 				}
 			})
-			.catch((e) => console.log(e));
+			.catch((e) => console.log('error from get rooms', e));
 	};
 
 	useEffect(() => {

@@ -1,12 +1,10 @@
-import { Ionicons, Feather } from '@expo/vector-icons';
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { Image, Text, TouchableOpacity, View, BackHandler } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
 // import useUser from '../hooks/useUser';
-import { authContext } from '../lib/authContext';
 import auth from '@react-native-firebase/auth';
-import Splash from '../components/Splash';
-import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { Button } from 'react-native-paper';
 
 const SplashScreen = () => {
 	const navigation = useNavigation();

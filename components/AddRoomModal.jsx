@@ -1,23 +1,16 @@
-import {
-	View,
-	Text,
-	Modal,
-	Pressable,
-	TextInput,
-	TouchableOpacity,
-} from 'react-native';
-import React, { useContext, useLayoutEffect, useState } from 'react';
-import { Button as Buttons } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
-import { authContext } from '../lib/authContext';
-import Button from './Button';
+import React, { useLayoutEffect, useState } from 'react';
+import { Modal, Pressable, Text, TextInput, View } from 'react-native';
+import { Button as Buttons } from 'react-native-paper';
 import { useUserStore } from '../store/useUserStore';
+import { Alert } from 'react-native';
 
 const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 	const [roomName, setRoomName] = useState('');
 	const [roomId, setRoomId] = useState('');
 	const [create, setCreate] = useState(true);
+	const [loading, setLoading] = useState(false);
 
 	const userId = useUserStore((state) => state.userId);
 
@@ -36,6 +29,7 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 
 	const addRoom = async () => {
 		if (roomName) {
+			setLoading(true);
 			try {
 				console.log({
 					title: roomName,
@@ -66,12 +60,15 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 				}
 			} catch (error) {
 				console.error(error);
+				Alert.alert(error.message);
 			}
+			setLoading(false);
 		}
 	};
 
 	const joinRoom = async () => {
 		if (roomId) {
+			setLoading(true);
 			try {
 				console.log({
 					title: roomName,
@@ -91,13 +88,16 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 							}),
 						});
 					console.log('success');
+
 					setRoomName('');
 				}
 
 				setModalVisible(false);
 			} catch (error) {
 				console.error(error);
+				Alert.alert(error.message);
 			}
+			setLoading(false);
 		}
 	};
 
@@ -128,6 +128,7 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 							setRoomName={setRoomName}
 							addRoom={addRoom}
 							setModalVisible={setModalVisible}
+							loading={loading}
 						/>
 					) : (
 						<JoinRoom
@@ -135,6 +136,7 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 							setRoomId={setRoomId}
 							roomId={roomId}
 							joinRoom={joinRoom}
+							loading={loading}
 						/>
 					)}
 					<View>
@@ -158,7 +160,13 @@ const AddRoomModal = ({ modalVisible, setModalVisible, setRooms }) => {
 
 export default AddRoomModal;
 
-export function JoinRoom({ setModalVisible, setRoomId, joinRoom, roomId }) {
+export function JoinRoom({
+	setModalVisible,
+	setRoomId,
+	joinRoom,
+	roomId,
+	loading,
+}) {
 	return (
 		<View className='space-y-3'>
 			<Text className='text-[18px] font-semibold uppercase '>join room</Text>
@@ -177,7 +185,9 @@ export function JoinRoom({ setModalVisible, setRoomId, joinRoom, roomId }) {
 					textColor='white'
 					mode='elevated'
 					className='rounded-lg font-bold tracking-wider'
-					onPress={joinRoom}>
+					onPress={joinRoom}
+					disabled={loading}
+					loading={loading}>
 					Join
 				</Buttons>
 				<Buttons
@@ -200,6 +210,7 @@ export function CreateRoom({
 	setRoomName,
 	addRoom,
 	setModalVisible,
+	loading,
 }) {
 	return (
 		<View className='space-y-3'>
@@ -219,6 +230,8 @@ export function CreateRoom({
 					textColor='white'
 					mode='elevated'
 					className='rounded-lg font-bold tracking-wider'
+					disabled={loading}
+					loading={loading}
 					onPress={addRoom}>
 					create
 				</Buttons>
