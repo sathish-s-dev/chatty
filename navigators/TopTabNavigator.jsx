@@ -4,6 +4,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 
 import ProfileScreen from '../screens/ProfileScreen';
 import { Feather } from '@expo/vector-icons';
+import BackgroundFetchScreen from '../screens/Background';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -45,11 +46,11 @@ export function TopTabNavigator() {
 				component={HomeScreen}
 				options={config('home')}
 			/>
-			{/* <Tab.Screen
-				name='settings'
-				component={SettingsScreen}
+			<Tab.Screen
+				name='background'
+				component={BackgroundFetchScreen}
 				options={config('settings')}
-			/> */}
+			/>
 			<Tab.Screen
 				name='profile'
 				component={ProfileScreen}

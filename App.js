@@ -14,6 +14,9 @@ import { StatusBar } from 'expo-status-bar';
 import { Alert, BackHandler } from 'react-native';
 import StackNavigator from './navigators/StackNavigator';
 import { useUserStore } from './store/useUserStore';
+import useNotification, {
+	schedulePushNotification,
+} from './hooks/useNotification';
 
 export default function App() {
 	const [isBiometricSupported, setIsBiometricSupported] = useState(false);
@@ -35,6 +38,8 @@ export default function App() {
 		}
 	};
 
+	useNotification();
+
 	useEffect(() => {
 		(async () => {
 			const compatible = await hasHardwareAsync();
@@ -55,10 +60,11 @@ export default function App() {
 				requireConfirmation: true,
 			});
 			console.log(result);
-			if (!result?.success) {
+			if (result?.warning) {
 				BackHandler.exitApp();
 				// setAuth(false);
 			}
+			await schedulePushNotification('chatty', 'welcome back');
 		})();
 		getUser();
 	}, [userId]);

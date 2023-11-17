@@ -1,10 +1,11 @@
 import React, { useState, useLayoutEffect, useEffect, useRef } from 'react';
 import {
+	FlatList,
 	KeyboardAvoidingView,
 	Pressable,
-	ScrollView,
 	TextInput,
 	TouchableOpacity,
+	ScrollView,
 	View,
 } from 'react-native';
 import ChatBubble from '../components/ChatBubble';
@@ -18,6 +19,11 @@ import { Avatar, IconButton } from 'react-native-paper';
 import { addFavouriteRoom, removeFavouriteRoom } from '../lib/roomHelper';
 import useUser from '../hooks/useUser';
 import { useUserStore } from '../store/useUserStore';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import useNotification, {
+	schedulePushNotification,
+} from '../hooks/useNotification';
 
 const ChatScreen = ({ route }) => {
 	const userId = useUserStore((state) => state.userId);
@@ -40,11 +46,12 @@ const ChatScreen = ({ route }) => {
 	}, [userData?.favouriteRooms]);
 
 	useLayoutEffect(() => {
-		setTimeout(() => {
+		setTimeout(async () => {
 			chatRef?.current.scrollToEnd({
 				animated: true,
 			});
-		}, 500);
+			
+		}, 1000);
 	}, []);
 
 	useLayoutEffect(() => {
@@ -141,10 +148,44 @@ const ChatScreen = ({ route }) => {
 			<ScrollView
 				className='bg-slate-950 px-4 relative'
 				ref={chatRef}>
-				<View className='space-y-4 py-4'>
-					{chats &&
-						chats.map((item, i) => {
-							console.log(item);
+				{chats &&
+					chats.map((item, i) => {
+						console.log(item);
+						return item.name === user.name ? (
+							<ChatBubble
+								key={i}
+								message={item?.message}
+								right
+								email={item?.email}
+							/>
+						) : (
+							<ChatBubble
+								key={i}
+								message={item?.message}
+								photoURL={item?.photoUrl}
+								displayName={item?.name}
+								email={item?.email}
+							/>
+						);
+					})}
+
+				{/* {chats && (
+					<FlatList
+						className='w-full'
+						data={chats}
+						keyExtractor={(_, i) => i.toString()}
+						renderItem={({ item, i }) => {
+							// console.log(item);
+
+							try {
+								schedulePushNotification({
+									title: 'Chatty',
+									body: item.message,
+								});
+							} catch (error) {
+								console.log(error);
+							}
+
 							return item.name === user.name ? (
 								<ChatBubble
 									key={i}
@@ -161,9 +202,11 @@ const ChatScreen = ({ route }) => {
 									email={item?.email}
 								/>
 							);
-						})}
-				</View>
+						}}
+					/>
+				)} */}
 			</ScrollView>
+
 			<NewMessage
 				sendMessage={sendMessage}
 				setMessage={setMessage}
@@ -188,7 +231,7 @@ function NewMessage({ setMessage, message, sendMessage }) {
 				/>
 				<TouchableOpacity
 					onPress={sendMessage}
-					className='bg-blue-400 absolute rounded-full right-0 h-full justify-center items-center'>
+					className='bg-blue-600 absolute rounded-full right-0 h-full justify-center items-center'>
 					<IconButton
 						icon={'send'}
 						iconColor={'#fafafa'}
