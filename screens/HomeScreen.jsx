@@ -1,42 +1,30 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import {
-	RefreshControl,
-	ScrollView,
-	Text,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import ChatItem from '../components/ChatItem';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { FAB } from 'react-native-paper';
-import AddRoomModal from '../components/AddRoomModal';
 import FavouritePeoples from '../components/FavouritePeoples';
-import Header from '../components/Header';
 import useUser from '../hooks/useUser';
-import NotificationComp from '../utils/notification';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserStore } from '../store/useUserStore';
+import FloatingButtonSection from './FloatingButtonSection';
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
 
 	const userId = useUserStore((state) => state.userId);
-	// console.log(userId, 'new user');
 
 	const userData = useUser(userId);
 	const [rooms, setRooms] = useState([]);
 	const [refreshing, setRefreshing] = useState(false);
 
-	useEffect(() => {
-		setRefreshing(true);
-		setTimeout(() => {
-			setRefreshing(false);
-		}, 1000);
-	}, []);
+	// useEffect(() => {
+	// 	setRefreshing(true);
+	// 	setTimeout(() => {
+	// 		setRefreshing(false);
+	// 	}, 1000);
+	// }, []);
 
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -72,8 +60,6 @@ const HomeScreen = () => {
 		}
 	}, []);
 
-	const [modalVisible, setModalVisible] = useState(false);
-
 	return (
 		<>
 			<ScrollView
@@ -84,7 +70,6 @@ const HomeScreen = () => {
 						onRefresh={onRefresh}
 					/>
 				}>
-				{/* <Header /> */}
 				<View className='h-52 bg-blue-700 rounded-[34px] mt-5'>
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
 						Favourite Rooms
@@ -95,8 +80,8 @@ const HomeScreen = () => {
 					<Text className='text-slate-100 text-lg font-semibold p-4 pt-5'>
 						Chats
 					</Text>
-					<ScrollView>
-						{rooms &&
+					<ScrollView className='pb-24'>
+						{!!rooms.length &&
 							rooms.map((item, index) => (
 								<ChatItem
 									key={index}
@@ -107,20 +92,7 @@ const HomeScreen = () => {
 					</ScrollView>
 				</View>
 			</ScrollView>
-			<TouchableOpacity
-				onPress={() => setModalVisible(!modalVisible)}
-				className='absolute justify-center items-center rounded-full bottom-6 right-6'>
-				<FAB
-					icon={'plus'}
-					animated
-					mode='elevated'
-				/>
-			</TouchableOpacity>
-			<AddRoomModal
-				modalVisible={modalVisible}
-				setModalVisible={setModalVisible}
-				setRooms={setRooms}
-			/>
+			<FloatingButtonSection setRooms={setRooms} />
 			{/* <NotificationComp /> */}
 		</>
 	);

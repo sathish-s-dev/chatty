@@ -19,11 +19,6 @@ import { Avatar, IconButton } from 'react-native-paper';
 import { addFavouriteRoom, removeFavouriteRoom } from '../lib/roomHelper';
 import useUser from '../hooks/useUser';
 import { useUserStore } from '../store/useUserStore';
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
-import useNotification, {
-	schedulePushNotification,
-} from '../hooks/useNotification';
 
 const ChatScreen = ({ route }) => {
 	const userId = useUserStore((state) => state.userId);
@@ -45,12 +40,17 @@ const ChatScreen = ({ route }) => {
 		}
 	}, [userData?.favouriteRooms]);
 
+	useEffect(() => {
+		firestore().collection('room').doc(param?.id).update({
+			newMessages: [],
+		});
+	}, [userId]);
+
 	useLayoutEffect(() => {
 		setTimeout(async () => {
 			chatRef?.current.scrollToEnd({
 				animated: true,
 			});
-			
 		}, 1000);
 	}, []);
 
@@ -117,6 +117,7 @@ const ChatScreen = ({ route }) => {
 							email: user?.email,
 						}),
 						lastMessage: message,
+						newMessages: firestore.FieldValue.arrayUnion(message),
 					})
 					.then((val) => {
 						console.log('added message', val);
@@ -168,43 +169,6 @@ const ChatScreen = ({ route }) => {
 							/>
 						);
 					})}
-
-				{/* {chats && (
-					<FlatList
-						className='w-full'
-						data={chats}
-						keyExtractor={(_, i) => i.toString()}
-						renderItem={({ item, i }) => {
-							// console.log(item);
-
-							try {
-								schedulePushNotification({
-									title: 'Chatty',
-									body: item.message,
-								});
-							} catch (error) {
-								console.log(error);
-							}
-
-							return item.name === user.name ? (
-								<ChatBubble
-									key={i}
-									message={item?.message}
-									right
-									email={item?.email}
-								/>
-							) : (
-								<ChatBubble
-									key={i}
-									message={item?.message}
-									photoURL={item?.photoUrl}
-									displayName={item?.name}
-									email={item?.email}
-								/>
-							);
-						}}
-					/>
-				)} */}
 			</ScrollView>
 
 			<NewMessage

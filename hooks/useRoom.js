@@ -25,6 +25,7 @@ export const useRooms = (userId) => {
 				}
 			});
 		// console.log(subscribe);
+		return () => subscribe();
 	}, [userId]);
 	// useEffect(() => {
 	// 	const subscribe = firestore()

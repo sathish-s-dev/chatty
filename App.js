@@ -34,7 +34,7 @@ export default function App() {
 			setId(Id);
 			console.log(Id, result.exists);
 		} catch (error) {
-			console.log(error.message);
+			console.log('app', error.message);
 		}
 	};
 
@@ -60,13 +60,13 @@ export default function App() {
 				requireConfirmation: true,
 			});
 			console.log(result);
-			if (result?.warning) {
+			if (!result?.success) {
 				BackHandler.exitApp();
-				// setAuth(false);
+				return;
 			}
-			await schedulePushNotification('chatty', 'welcome back');
 		})();
 		getUser();
+		// schedulePushNotification('chatty', 'welcome back');
 	}, [userId]);
 
 	return (
